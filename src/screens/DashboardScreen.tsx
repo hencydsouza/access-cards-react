@@ -41,9 +41,9 @@ const DashboardScreen = () => {
                     if (diffDays === 0) {
                         log._id = "Today";
                     } else if (diffDays === 1) {
-                        log._id = "1d ago";
+                        log._id = "1d";
                     } else {
-                        log._id = `${diffDays}d ago`;
+                        log._id = `${diffDays}d`;
                     }
                     return log;
                 });
