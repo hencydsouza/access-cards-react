@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useContext, createContext, useState } from "react";
 import { useNavigate } from "react-router";
+import useApiClient from "./ApiClient";
 
 interface IAuth {
     user: { name: string, email: string } | null,
@@ -20,10 +20,6 @@ const AuthContext = createContext<IAuth>({
     refreshToken: ""
 });
 
-const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-})
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const AuthProvider = (props: { children: any }) => {
     const [user, setUser] = useState(null)
@@ -33,7 +29,7 @@ export const AuthProvider = (props: { children: any }) => {
 
     const refresh = async (token: string) => {
         try {
-            const response = await api.post('/auth/refresh-tokens', { refreshToken: token })
+            const response = await useApiClient._post('/auth/refresh-tokens', { refreshToken: token })
             console.log(response.data)
             setUser(response.data.employee)
             setAccessToken(response.data.tokens.access.token)
@@ -50,7 +46,7 @@ export const AuthProvider = (props: { children: any }) => {
 
     const loginAction = async (data: { email: string, password: string, resource: string }) => {
         try {
-            const response = await api.post('/auth/login', data)
+            const response = await useApiClient._post('/auth/login', data)
 
             if (response.data) {
                 console.log(response.data)
@@ -73,7 +69,7 @@ export const AuthProvider = (props: { children: any }) => {
         setAccessToken("")
         setRefreshToken("")
         localStorage.removeItem("refreshToken")
-        await api.post('/auth/logout', {
+        await useApiClient._post('/auth/logout', {
             refreshToken
         })
         navigate("/login")

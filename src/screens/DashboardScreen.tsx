@@ -4,13 +4,10 @@ import { eye } from "../assets/svg"
 import DashboardCard from "../components/DashboardCard"
 import BreadcrumbContainer from "../components/BreadcrumbContainer"
 import Breadcrumb from "../components/Breadcrumb"
-import axios from "axios"
 import { useEffect, useState } from "react"
 import { useAuth } from "../hooks/AuthProvider"
-
-const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-})
+import { LinkContainer } from "react-router-bootstrap"
+import useApiClient from "../hooks/ApiClient"
 
 const DashboardScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -34,7 +31,7 @@ const DashboardScreen = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get("/dashboard")
+                const response = await useApiClient._get('/dashboard')
                 response.data.access_logs = response.data.access_logs.reverse()
                 if (response.data.access_logs[response.data.access_logs.length - 1]._id === (new Date()).toISOString().split('T')[0])
                     response.data.access_logs[response.data.access_logs.length - 1]._id = "Today"
@@ -60,7 +57,9 @@ const DashboardScreen = () => {
                 <DashboardCard>
                     <div className="text-[#B3B3B3] flex justify-between">
                         <p>Total Buildings</p>
-                        {eye}
+                        <LinkContainer to="/dashboard/buildings" className="cursor-pointer">
+                            {eye}
+                        </LinkContainer>
                     </div>
                     <p className="mt-[1.438rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[3.313rem]">{data.buildings}</p>
                 </DashboardCard>
@@ -68,7 +67,9 @@ const DashboardScreen = () => {
                 <DashboardCard>
                     <div className="text-[#B3B3B3] flex justify-between">
                         <p>Total Companies</p>
-                        {eye}
+                        <LinkContainer to="/dashboard/companies" className="cursor-pointer">
+                            {eye}
+                        </LinkContainer>
                     </div>
                     <p className="mt-[1.438rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[3.313rem]">{data.companies}</p>
                 </DashboardCard>
@@ -77,7 +78,9 @@ const DashboardScreen = () => {
                     <DashboardCard>
                         <div className="text-[#B3B3B3] flex justify-between">
                             <p>Total Access Cards</p>
-                            {eye}
+                            <LinkContainer to="/dashboard/access-cards" className="cursor-pointer">
+                                {eye}
+                            </LinkContainer>
                         </div>
                         <p className="mt-[1.438rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[3.313rem]">{data.access_card.total_count}</p>
                         {(data.access_card.inactive_count ? <p className="text-[#D7373F] m-0"><span>{data.access_card.inactive_count}</span> Inactive</p> : "")}
