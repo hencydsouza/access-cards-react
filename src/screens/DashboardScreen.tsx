@@ -69,7 +69,7 @@ const DashboardScreen = () => {
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                 <DashboardCard>
                     <div className="text-[#B3B3B3] flex justify-between">
-                        <p className="text-xs sm:text-md">Total Buildings</p>
+                        <p className="text-[0.8rem] sm:text-[1rem]">Total Buildings</p>
                         <LinkContainer to="/dashboard/buildings" className="cursor-pointer h-[18px] sm:h-[24px]">
                             {eye}
                         </LinkContainer>
@@ -79,7 +79,7 @@ const DashboardScreen = () => {
 
                 <DashboardCard>
                     <div className="text-[#B3B3B3] flex justify-between">
-                        <p className="text-xs sm:text-md">Total Companies</p>
+                        <p className="text-[0.8rem] sm:text-[1rem]">Total Companies</p>
                         <LinkContainer to="/dashboard/companies" className="cursor-pointer h-[18px] sm:h-[24px]">
                             {eye}
                         </LinkContainer>
@@ -90,7 +90,7 @@ const DashboardScreen = () => {
                 <div className="lg:col-span-2 xl:col-span-1">
                     <DashboardCard>
                         <div className="text-[#B3B3B3] flex justify-between">
-                            <p className="text-xs sm:text-md">Total Access Cards</p>
+                            <p className="text-[0.8rem] sm:text-[1rem]">Total Access Cards</p>
                             <LinkContainer to="/dashboard/access-cards" className="cursor-pointer h-[18px] sm:h-[24px]">
                                 {eye}
                             </LinkContainer>
@@ -102,11 +102,11 @@ const DashboardScreen = () => {
             </div>
 
             <div>
-                <p className="text-[1rem] sm:text-[1.5rem] mt-6 font-semibold text-[#4B4B4B] mb-4">Recent Log Activity</p>
+                <p className="sm:text-[1.5rem] mt-6 font-semibold text-[#4B4B4B] mb-4">Recent Log Activity</p>
                 <div className="flex">
                     <DashboardCard maxWidth>
                         <div className="text-[#B3B3B3] flex justify-between">
-                            <p className="text-xs sm:text-md">Today</p>
+                            <p className="text-[0.8rem] sm:text-[1rem]">Today</p>
                         </div>
                         <p className="font-bold text-[#4B4B4B] text-[1.5rem]">{data.access_logs[data.access_logs.length - 1]._id === "Today" ? data.access_logs[data.access_logs.length - 1].count : 0}</p>
                         <div className="max-w-[40rem] h-[200px] text-[0.8rem] md:text-inherit md:h-[300px] mt-[0.625rem]">
