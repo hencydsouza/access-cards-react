@@ -10,19 +10,22 @@ import BuildingsScreen from './screens/buildings/BuildingsScreen.tsx'
 // import BuildingsEditScreen from './screens/buildings/BuildingsEditScreen.tsx'
 // import BuildingsAddScreen from './screens/buildings/BuildingsAddScreen.tsx'
 import DashLayout from './layouts/DashLayout.tsx'
+import PrivateRoute from './components/PrivateRoute.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route path='/' element={<HomeScreen />} />
       <Route path='/login' element={<LoginScreen />} />
-      <Route path='/dashboard' element={<DashLayout />}>
-        <Route path='/dashboard' index={true} element={<DashboardScreen />} />
-        <Route path='/dashboard/buildings' element={<BuildingsScreen />} />
+      <Route element={<PrivateRoute />}>
+        <Route path='/dashboard' element={<DashLayout />}>
+          <Route path='/dashboard' index={true} element={<DashboardScreen />} />
+          <Route path='/dashboard/buildings' element={<BuildingsScreen />} />
 
-      </Route>
-      {/* <Route path='/dashboard/buildings/edit' element={<BuildingsEditScreen />} />
+        </Route>
+        {/* <Route path='/dashboard/buildings/edit' element={<BuildingsEditScreen />} />
       <Route path='/dashboard/buildings/add' element={<BuildingsAddScreen />} /> */}
+      </Route>
     </Route>
   )
 )
