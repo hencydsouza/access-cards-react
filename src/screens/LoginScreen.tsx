@@ -1,8 +1,33 @@
 import vectorArt from '../assets/vectorArt.svg'
 import logo from '../assets/logo.svg'
 import { Button, Form } from 'react-bootstrap'
+import { useState } from 'react'
 
 const LoginScreen = () => {
+    const [input, setInput] = useState({
+        email: '',
+        password: '',
+        resource: ''
+    })
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleSubmitEvent = (e: any) => {
+        e.preventDefault();
+        if (input.email.length > 0 && input.password.length > 0 && input.resource.length > 0) {
+            console.log(input)
+        }
+        // alert('Please fill all the fields')
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleInput = (e: any) => {
+        const { name, value } = e.target
+        setInput((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
     return (
         <section className="flex">
             <div className="bg-[linear-gradient(180deg,_rgb(20,_114,_230)_0%,_#4f96ec_100%)] lg:min-w-[40rem] h-screen flex-col justify-between rounded-tl-[0] rounded-br-[3rem] rounded-tr-[3rem] rounded-bl-[0] sm:flex hidden">
@@ -32,25 +57,25 @@ const LoginScreen = () => {
                 <div className="flex-grow flex flex-col justify-center w-100">
                     <div className='px-4 w-100 md:px-0 md:max-w-[28rem] m-auto'>
                         <h2 className="text-[1.5rem] font-semibold mb-8">Account Login</h2>
-                        <Form>
+                        <Form onSubmit={handleSubmitEvent}>
                             <Form.Group className="mb-8">
                                 <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Login As</Form.Label>
-                                <Form.Select aria-label="Default select example">
+                                <Form.Select name="resource" onChange={handleInput} aria-label="Default select example">
                                     <option>Select a login type</option>
-                                    <option value="1">Product Admin</option>
-                                    <option value="2">Building Admin</option>
-                                    <option value="3">Company Admin</option>
+                                    <option value="product">Product Admin</option>
+                                    <option value="building">Building Admin</option>
+                                    <option value="company">Company Admin</option>
                                 </Form.Select>
                             </Form.Group>
 
                             <Form.Group className="mb-8" controlId="formBasicEmail">
                                 <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Email address</Form.Label>
-                                <Form.Control type="email" placeholder="Enter email" className="" />
+                                <Form.Control type="email" onChange={handleInput} name="email" placeholder="Enter email" className="" />
                             </Form.Group>
 
                             <Form.Group className="mb-8" controlId="formBasicPassword">
                                 <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Password</Form.Label>
-                                <Form.Control type="password" placeholder="Password" className="" />
+                                <Form.Control type="password" onChange={handleInput} name="password" placeholder="Password" className="" />
                             </Form.Group>
                             <Button variant="primary" type="submit" className="flex  items-center justify-center gap-2 w-100">
                                 <i className="fa-solid fa-arrow-right-to-bracket"></i>

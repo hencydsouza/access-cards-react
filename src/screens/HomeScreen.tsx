@@ -1,5 +1,6 @@
 import logo from '../assets/logo.svg'
 import { Button } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 const HomeScreen = () => {
     return (
@@ -18,10 +19,13 @@ const HomeScreen = () => {
                         dolorem exercitationem id deleniti maxime aut molestiae tempore?Id porro galisum non omnis totam eum
                         unde iusto sed reprehenderit repellendus et omnis laudantium sed magnam quibusdam. Est quaerat
                         voluptatem id pariatur pariatur et sunt quisquam id vero corrupti! </p>
-                    <Button variant="light" className='flex justify-center items-center gap-2 text-[#4B4B4B] lg:px-[8.75rem] md:px-[4.375rem] text-[1rem] font-semibold '>
-                        <i className="fa-solid fa-arrow-right-to-bracket"></i>
-                        Login
-                    </Button>
+
+                    <LinkContainer to="/login">
+                        <Button variant="light" className='flex justify-center items-center gap-2 text-[#4B4B4B] lg:px-[8.75rem] md:px-[4.375rem] text-[1rem] font-semibold '>
+                            <i className="fa-solid fa-arrow-right-to-bracket"></i>
+                            Login
+                        </Button>
+                    </LinkContainer>
                 </div>
             </div>
 
