@@ -33,8 +33,21 @@ const DashboardScreen = () => {
             try {
                 const response = await useApiClient._getWithToken('/dashboard', auth.accessToken)
                 response.data.access_logs = response.data.access_logs.reverse()
-                if (response.data.access_logs[response.data.access_logs.length - 1]._id === (new Date()).toISOString().split('T')[0])
-                    response.data.access_logs[response.data.access_logs.length - 1]._id = "Today"
+
+                const today = new Date();
+                response.data.access_logs = response.data.access_logs.map((log: { _id: string, count: number }) => {
+                    const logDate = new Date(log._id);
+                    const diffDays = Math.floor((today.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24));
+                    if (diffDays === 0) {
+                        log._id = "Today";
+                    } else if (diffDays === 1) {
+                        log._id = "1d ago";
+                    } else {
+                        log._id = `${diffDays}d ago`;
+                    }
+                    return log;
+                });
+
                 setData(response.data)
                 setIsLoading(false)
             } catch (err) {
