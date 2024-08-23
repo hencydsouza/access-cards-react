@@ -1,6 +1,7 @@
 import { useContext, createContext, useState } from "react";
 import { useNavigate } from "react-router";
 import useApiClient from "./ApiClient";
+import { toast } from "react-toastify";
 
 interface IAuth {
     user: { name: string, email: string } | null,
@@ -55,12 +56,14 @@ export const AuthProvider = (props: { children: any }) => {
                 setRefreshToken(response.data.tokens.refresh.token)
                 localStorage.setItem("refreshToken", response.data.tokens.refresh.token)
                 navigate('/dashboard')
+                toast.success("Login successful", { theme: "dark", position: "bottom-right" })
                 return
             }
             throw new Error("Something went wrong")
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            console.log(err)
+            toast.error(err.response.data.message, { theme: "dark", position: "bottom-right" })
+            // console.log(err)
         }
     }
 
@@ -72,6 +75,7 @@ export const AuthProvider = (props: { children: any }) => {
         await useApiClient._post('/auth/logout', {
             refreshToken
         })
+        toast.success("Logout successful", { theme: "dark", position: "bottom-right" })
         navigate("/login")
     }
 

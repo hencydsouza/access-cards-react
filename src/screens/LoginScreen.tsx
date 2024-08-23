@@ -4,6 +4,7 @@ import { Button, Form } from 'react-bootstrap'
 import { useState } from 'react'
 import { useAuth } from '../hooks/AuthProvider'
 import { LinkContainer } from 'react-router-bootstrap'
+import { toast } from 'react-toastify'
 
 const LoginScreen = () => {
     const [input, setInput] = useState({
@@ -21,7 +22,7 @@ const LoginScreen = () => {
             auth.loginAction(input)
             return
         }
-        alert('Please fill all the fields')
+        toast.error('Please fill all the fields', { theme: 'dark', position: "bottom-right" })
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,16 +50,16 @@ const LoginScreen = () => {
             </div>
 
             <div className="w-full h-screen flex flex-col items-center justify-between relative overflow-hidden">
-                <div className="self-start px-[2rem] py-[1rem] flex justify-between w-full bg-[#1472e6] sm:bg-transparent rounded-bl-[2rem] rounded-br-[2rem]">
+                <div className="self-start px-[1rem] py-[0.5rem] sm:px-[2rem] sm:py-[1rem] flex justify-between w-full bg-[#1472e6] sm:bg-transparent">
                     <LinkContainer to="/">
-                        <button className="btn w-max flex gap-[8px] items-center sm:text-[#6E6E6E] text-[#fff] font-semibold left-[0] order-2">
+                        <button className="btn text-sm sm:text-base w-max flex gap-[8px] items-center sm:text-[#6E6E6E] text-[#fff] font-semibold left-[0] order-2">
                             <i className="fa-solid fa-arrow-left"></i>
                             Back
                         </button>
                     </LinkContainer>
                     <div className="sm:hidden justify-center items-center gap-2 [filter:drop-shadow(-2px_3px_3px_rgba(0,_0,_0,_0.2))] flex order-1">
-                        <img className='w-[2rem] md:w-[3rem] lg:w-auto h-full' src={logo} alt="" />
-                        <p className='m-0 text-[1.6rem] lg:text-[3rem] text-[#FFFFFF] font-bold'>KeyPass</p>
+                        <img className='w-[1.5rem] md:w-[3rem] lg:w-auto h-full' src={logo} alt="" />
+                        <p className='m-0 text-[1.1rem] lg:text-[3rem] text-[#FFFFFF] font-bold'>KeyPass</p>
                     </div>
                 </div>
                 <div className="flex-grow flex flex-col justify-center w-100">
