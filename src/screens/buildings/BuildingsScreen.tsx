@@ -10,7 +10,6 @@ const BuildingsScreen = () => {
                 <div className="flex items-start gap-3 md:items-center justify-between flex-col md:flex-row">
                     <div>
                         <BreadcrumbContainer>
-                            <Breadcrumb text="Dashboard" />
                             <Breadcrumb active text="Buildings" />
                         </BreadcrumbContainer>
                         <p className="text-[0.7rem] md:text-[1rem] font-medium text-[#B3B3B3] m-0">View all buildings</p>

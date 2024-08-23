@@ -121,7 +121,7 @@ const DashboardScreen = () => {
                     </DashboardCard>
                 </div>
             </div>
-        </div>) : (<div className="text-center">Loading...</div>)
+        </div>) : (<div className="text-center font-semibold">Loading...</div>)
     )
 }
 
