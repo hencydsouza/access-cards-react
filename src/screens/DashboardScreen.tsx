@@ -10,6 +10,8 @@ import { LinkContainer } from "react-router-bootstrap"
 import useApiClient from "../hooks/ApiClient"
 
 const DashboardScreen = () => {
+    const auth = useAuth()
+
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState({
         buildings: 0,
@@ -26,12 +28,10 @@ const DashboardScreen = () => {
         ]
     })
 
-    const user = useAuth().user
-
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await useApiClient._get('/dashboard')
+                const response = await useApiClient._getWithToken('/dashboard', auth.accessToken)
                 response.data.access_logs = response.data.access_logs.reverse()
                 if (response.data.access_logs[response.data.access_logs.length - 1]._id === (new Date()).toISOString().split('T')[0])
                     response.data.access_logs[response.data.access_logs.length - 1]._id = "Today"
@@ -43,7 +43,7 @@ const DashboardScreen = () => {
         }
 
         fetchData()
-    }, [])
+    }, [auth])
 
     return (
         !isLoading ? (<div >
@@ -51,7 +51,7 @@ const DashboardScreen = () => {
                 <BreadcrumbContainer>
                     <Breadcrumb active text="Dashboard" />
                 </BreadcrumbContainer>
-                <p className="text-[0.7rem] sm:text-[1rem] font-medium text-[#B3B3B3] m-0">Welcome back, {user?.name}</p>
+                <p className="text-[0.7rem] sm:text-[1rem] font-medium text-[#B3B3B3] m-0">Welcome back, {auth.user?.name}</p>
             </div>
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                 <DashboardCard>
