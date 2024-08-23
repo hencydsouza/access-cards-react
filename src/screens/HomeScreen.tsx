@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 const HomeScreen = () => {
     return (
         <section className="flex">
-            <div className="bg-[url('images/van-tay-media-chyT9XPAdcg-unsplash.jpg')] bg-cover bg-center lg:bg-[linear-gradient(180deg,_rgb(20,_114,_230)_0%,_#4f96ec_100%)] lg:min-w-[40rem] h-screen flex flex-col justify-center lg:rounded-tr-[3rem] lg:rounded-br-[3rem] z-10 w-full relative">
+            <div className="bg-[url('/images/van-tay-media-chyT9XPAdcg-unsplash.jpg')] bg-cover bg-center lg:bg-[linear-gradient(180deg,_rgb(20,_114,_230)_0%,_#4f96ec_100%)] lg:min-w-[40rem] h-screen flex flex-col justify-center lg:rounded-tr-[3rem] lg:rounded-br-[3rem] z-10 w-full relative">
                 <div className="max-h-screen lg:max-h-[25rem] h-full flex flex-col justify-evenly lg:justify-between items-center lg:bg-transparent">
                     <div className="flex max-h-[4.5rem] justify-start w-full lg:w-auto lg:justify-center gap-2 absolute lg:relative top-0 px-[1rem] py-[0.5rem] lg:p-0 bg-[#1472e6] lg:bg-transparent">
                         <img src={logo} alt="" className="w-[2rem] md:w-[3rem] lg:w-auto h-full" />
