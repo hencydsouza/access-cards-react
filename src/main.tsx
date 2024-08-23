@@ -1,10 +1,34 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import ReactDOM from 'react-dom/client'
+import React from 'react'
 import App from './App.tsx'
 import './index.css'
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
+import HomeScreen from './screens/HomeScreen.tsx'
+import LoginScreen from './screens/LoginScreen.tsx'
+import DashboardScreen from './screens/DashboardScreen.tsx'
+import BuildingsScreen from './screens/buildings/BuildingsScreen.tsx'
+// import BuildingsEditScreen from './screens/buildings/BuildingsEditScreen.tsx'
+// import BuildingsAddScreen from './screens/buildings/BuildingsAddScreen.tsx'
+import DashLayout from './layouts/DashLayout.tsx'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path='/' element={<App />}>
+      <Route path='/' element={<HomeScreen />} />
+      <Route path='/login' element={<LoginScreen />} />
+      <Route path='/dashboard' element={<DashLayout />}>
+        <Route path='/dashboard' index={true} element={<DashboardScreen />} />
+        <Route path='/dashboard/buildings' element={<BuildingsScreen />} />
+
+      </Route>
+      {/* <Route path='/dashboard/buildings/edit' element={<BuildingsEditScreen />} />
+      <Route path='/dashboard/buildings/add' element={<BuildingsAddScreen />} /> */}
+    </Route>
+  )
+)
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
 )

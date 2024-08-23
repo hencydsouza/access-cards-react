@@ -2,8 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
+}
+
+.active-element {
+  &::before {
+    content: "";
+    height: inherit;
+    width: 0.25rem;
+    background-color: #fff;
+    border-radius: 0 1rem 1rem 0;
+    position: absolute;
+    left: 0;
+  }
+}
+
+.breadcrumb-item {
+  --bs-breadcrumb-divider: '>'
+}
+
+.breadcrumb {
+  color: #B3B3B3;
+  font-weight: 800;
+  --bs-breadcrumb-divider-color: rgb(20, 114, 230);
 }
