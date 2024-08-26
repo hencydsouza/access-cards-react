@@ -34,11 +34,29 @@ const _postWithToken = (url: string, data = {}, accessToken: string) => {
     })
 }
 
+const _patchWithToken = (url: string, data = {}, accessToken: string) => {
+    return apiClient.patch(url, data, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+    })
+}
+
+const _deleteWithToken = (url: string, accessToken: string) => {
+    return apiClient.delete(url, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+    })
+}
+
 const useApiClient = {
     _get,
     _getWithToken,
     _post,
-    _postWithToken
+    _postWithToken,
+    _patchWithToken,
+    _deleteWithToken
 }
 
 export default useApiClient

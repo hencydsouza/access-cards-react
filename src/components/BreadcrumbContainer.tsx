@@ -2,7 +2,7 @@
 const BreadcrumbContainer = (props: { children: any }) => {
     const { children } = props
     return (
-        <nav aria-label="breadcrumb" >
+        <nav aria-label="breadcrumb cursor-default" >
             <ol className="text-[1.5rem] md:text-[2.25rem] breadcrumb">
                 {children}
             </ol>
