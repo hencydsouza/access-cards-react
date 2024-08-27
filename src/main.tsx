@@ -15,6 +15,7 @@ import BuildingsDetailsScreen from './screens/buildings/BuildingsDetailsScreen.t
 import CompaniesScreen from './screens/companies/CompaniesScreen.tsx'
 import CompaniesDetailsScreen from './screens/companies/CompaniesDetailsScreen.tsx'
 import CompaniesEditScreen from './screens/companies/CompaniesEditScreen.tsx'
+import CompaniesAddScreen from './screens/companies/CompaniesAddScreen.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,8 +34,9 @@ const router = createBrowserRouter(
           <Route path='/dashboard/companies' element={<CompaniesScreen />} />
           <Route path='/dashboard/companies/:id' element={<CompaniesDetailsScreen />} />
           <Route path='/dashboard/companies/edit/:id' element={<CompaniesEditScreen />} />
-          
-          
+          <Route path='/dashboard/companies/add' element={<CompaniesAddScreen />} />
+
+
 
         </Route>
       </Route>
