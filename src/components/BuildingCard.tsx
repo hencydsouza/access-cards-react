@@ -10,14 +10,14 @@ const BuildingCard = (props: { state: { name: string; _id: string; address: stri
         <div className="bg-white rounded-[1.5rem] border border-[#e8f1fc]">
             <div className="p-6 sm:p-8 flex justify-between h-full">
                 <div className="flex flex-col gap-[1rem]">
-                    <p className="lg:text-[1.75rem] font-extrabold text-[#2C2C2C] md:text-[1.55rem] text-[1.35rem]">{state.name}</p>
+                    <p className="lg:text-[1.4rem] font-extrabold text-[#2C2C2C] md:text-[1.2rem] text-[1.1rem]">{state.name}</p>
                     <div>
-                        <p className="lg:text-[1rem] text-[rgb(11,_63,_127)] md:text-[0.8rem] text-[0.6rem]">Owned By</p>
-                        <p className="lg:text-[1.1rem] font-medium text-[#4B4B4B] md:text-[1.05rem] text-[0.85rem]">{state.company[0] ? state.company[0].name : "Unowned"}</p>
+                        <p className="lg:text-[0.8rem] text-[rgb(11,_63,_127)] md:text-[0.7rem] text-[0.6rem]">Owned By</p>
+                        <p className="lg:text-[1rem] font-medium text-[#4B4B4B] md:text-[0.95rem] text-[0.75rem]">{state.company[0] ? state.company[0].name : "Unowned"}</p>
                     </div>
                     <div>
-                        <p className="lg:text-[1rem] text-[rgb(11,_63,_127)] md:text-[0.8rem] text-[0.6rem]">Location</p>
-                        <p className="lg:text-[1.1rem] font-medium text-[#4B4B4B] md:text-[1.05rem] text-[0.85rem]">{state.address}</p>
+                        <p className="lg:text-[0.8rem] text-[rgb(11,_63,_127)] md:text-[0.7rem] text-[0.6rem]">Location</p>
+                        <p className="lg:text-[1rem] font-medium text-[#4B4B4B] md:text-[0.95rem] text-[0.75rem]">{state.address}</p>
                     </div>
                     <LinkContainer to={`/dashboard/buildings/edit/${state._id}`} state={state}>
                         <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto">

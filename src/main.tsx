@@ -12,6 +12,7 @@ import BuildingsAddScreen from './screens/buildings/BuildingsAddScreen.tsx'
 import DashLayout from './layouts/DashLayout.tsx'
 import PrivateRoute from './components/PrivateRoute.tsx'
 import BuildingsDetailsScreen from './screens/buildings/BuildingsDetailsScreen.tsx'
+import CompaniesScreen from './screens/companies/CompaniesScreen.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,10 +22,14 @@ const router = createBrowserRouter(
       <Route element={<PrivateRoute />}>
         <Route path='/dashboard' element={<DashLayout />}>
           <Route path='/dashboard' index={true} element={<DashboardScreen />} />
+          {/* building routes */}
           <Route path='/dashboard/buildings' element={<BuildingsScreen />} />
           <Route path='/dashboard/buildings/:id' element={<BuildingsDetailsScreen />} />
           <Route path='/dashboard/buildings/edit/:id' element={<BuildingsEditScreen />} />
           <Route path='/dashboard/buildings/add' element={<BuildingsAddScreen />} />
+          {/* company routes */}
+          <Route path='/dashboard/companies' element={<CompaniesScreen />} />
+          
 
         </Route>
       </Route>

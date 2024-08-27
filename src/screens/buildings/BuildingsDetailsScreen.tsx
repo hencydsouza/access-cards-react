@@ -52,11 +52,11 @@ const BuildingsDetailsScreen = () => {
                         </div>
                         <div>
                             <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#0B3F7F]">Owned By</p>
-                            <p className="font-medium lg:text-[1.4rem] md:text-[1.2rem] text-[1.1rem] text-[#4b4b4b]">{building.company[0] ? building.company[0].name : "Not owned"}</p>
+                            <p className="font-medium lg:text-[1.3rem] md:text-[1.1rem] text-[1rem] text-[#4b4b4b]">{building.company[0] ? building.company[0].name : "Not owned"}</p>
                         </div>
                         <div>
                             <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#0B3F7F]">Location</p>
-                            <p className="font-medium lg:text-[1.4rem] md:text-[1.2rem] text-[1.1rem] text-[#4b4b4b]">{building.address}</p>
+                            <p className="font-medium lg:text-[1.3rem] md:text-[1.1rem] text-[1rem] text-[#4b4b4b]">{building.address}</p>
                         </div>
                     </div>
                 </div>
