@@ -7,13 +7,6 @@ import { eye } from "../assets/svg"
 const CompanyCard = (props: { state: { name: string, id: string, buildings: { buildingName: string }, ownedBuildings: { buildingName: string; }[] } }) => {
     const { state } = props
 
-    let ownedBuildings = ""
-    if (state.ownedBuildings.length > 0) {
-        ownedBuildings = state.ownedBuildings.map((building) => {
-            return building.buildingName
-        }).join(", ")
-    }
-
     return (
         <div className="bg-white rounded-[1.5rem] border border-[#e8f1fc]">
             <div className="p-6 sm:p-8 flex justify-between h-full">
@@ -26,10 +19,16 @@ const CompanyCard = (props: { state: { name: string, id: string, buildings: { bu
                     <div>
                         <p className="lg:text-[0.8rem] text-[rgb(11,_63,_127)] md:text-[0.7rem] text-[0.6rem]">Buildings Owned</p>
                         <p className="lg:text-[1rem] font-medium text-[#4B4B4B] md:text-[0.95rem] text-[0.75rem]">
-                            {state.ownedBuildings.length > 0 ? ownedBuildings : "none"}
+                            {
+                                state.ownedBuildings.length > 0
+                                    ? state.ownedBuildings.reduce((str, item) => {
+                                        return str.length == 0 ? str + item.buildingName : str + ", " + item.buildingName
+                                    }, "")
+                                    : "none"
+                            }
                         </p>
                     </div>
-                    <LinkContainer to={`/dashboard/buildings/edit/${state.id}`} state={state}>
+                    <LinkContainer to={`/dashboard/companies/edit/${state.id}`} state={state}>
                         <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto">
                             <i className="fa-regular fa-pen-to-square"></i>
                             Edit

@@ -13,6 +13,7 @@ import DashLayout from './layouts/DashLayout.tsx'
 import PrivateRoute from './components/PrivateRoute.tsx'
 import BuildingsDetailsScreen from './screens/buildings/BuildingsDetailsScreen.tsx'
 import CompaniesScreen from './screens/companies/CompaniesScreen.tsx'
+import CompaniesDetailsScreen from './screens/companies/CompaniesDetailsScreen.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,6 +30,7 @@ const router = createBrowserRouter(
           <Route path='/dashboard/buildings/add' element={<BuildingsAddScreen />} />
           {/* company routes */}
           <Route path='/dashboard/companies' element={<CompaniesScreen />} />
+          <Route path='/dashboard/companies/:id' element={<CompaniesDetailsScreen />} />
           
 
         </Route>
