@@ -36,7 +36,7 @@ const AccessLevelsDetailsScreen = () => {
                         <p className="text-[0.7rem] md:text-[1rem] font-medium text-[#B3B3B3] m-0">View access level</p>
                     </div>
 
-                    <LinkContainer to={`/dashboard/companies/edit/${accessLevels.id}`} state={accessLevels}>
+                    <LinkContainer to={`/dashboard/access-levels/edit/${accessLevels.id}`} state={accessLevels}>
                         <Button variant="primary" type="submit" className="flex  items-center justify-center gap-2">
                             <i className="fa-regular fa-pen-to-square"></i>
                             Edit

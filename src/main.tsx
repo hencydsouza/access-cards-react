@@ -18,6 +18,7 @@ import CompaniesEditScreen from './screens/companies/CompaniesEditScreen.tsx'
 import CompaniesAddScreen from './screens/companies/CompaniesAddScreen.tsx'
 import AccessLevelsScreen from './screens/accessLevels/AccessLevelsScreen.tsx'
 import AccessLevelsDetailsScreen from './screens/accessLevels/AccessLevelsDetailsScreen.tsx'
+import AccessLevelEditScreen from './screens/accessLevels/AccessLevelEditScreen.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
           {/* access levels */}
           <Route path='/dashboard/access-levels' element={<AccessLevelsScreen />} />
           <Route path='/dashboard/access-levels/:id' element={<AccessLevelsDetailsScreen />} />
+          <Route path='/dashboard/access-levels/edit/:id' element={<AccessLevelEditScreen />} />
 
 
 
