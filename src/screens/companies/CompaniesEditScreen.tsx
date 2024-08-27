@@ -55,7 +55,7 @@ const CompaniesEditScreen = () => {
 
     const handleSubmitEvent = async (e: any) => {
         e.preventDefault();
-        if (input.name !== company.name || input.buildingId !== company.buildings.buildingId || (company?.buildings ? company?.buildings.buildingId !== input.buildingId : input.buildingId !== "") || input.ownedBuildings) {
+        if (input.name !== company.name || input.buildingId !== company.buildings.buildingId || (company?.buildings ? company?.buildings.buildingId !== input.buildingId : input.buildingId !== "") || !areArraysEqual(input.ownedBuildings, company.ownedBuildings)) {
             try {
                 console.log(input)
                 const result = await useApiClient._patchWithToken(`/company/${company.id}`, { name: input.name, buildingId: input.buildingId, ownedBuildings: input.ownedBuildings }, auth.accessToken)
@@ -72,6 +72,14 @@ const CompaniesEditScreen = () => {
             return
         }
         toast.error('Please enter update fields', { theme: 'dark', position: "bottom-right" })
+    }
+
+    const areArraysEqual = (arr1: any[], arr2: any[]) => {
+        if (arr1.length !== arr2.length) return false;
+        for (let i = 0; i < arr1.length; i++) {
+            if (arr1[i] !== arr2[i]) return false;
+        }
+        return true;
     }
 
     const handleInput = (e: any) => {
