@@ -56,7 +56,7 @@ const CompaniesDetailsScreen = () => {
                         </div>
                         <div>
                             <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#0B3F7F]">Owned Buildings</p>
-                            <p className="font-medium lg:text-[1.3rem] md:text-[1.1rem] text-[1rem] text-[#4b4b4b]">{company.ownedBuildings.reduce((str, item) => { return str.length == 0 ? str + item.buildingName : str + ", " + item.buildingName }, "")}</p>
+                            <p className="font-medium lg:text-[1.3rem] md:text-[1.1rem] text-[1rem] text-[#4b4b4b]">{company.ownedBuildings.reduce((str, item) => { return str.length == 0 ? str + item.buildingName : str + ", " + item.buildingName }, "") || "none"}</p>
                         </div>
                     </div>
                 </div>

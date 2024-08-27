@@ -14,6 +14,7 @@ import PrivateRoute from './components/PrivateRoute.tsx'
 import BuildingsDetailsScreen from './screens/buildings/BuildingsDetailsScreen.tsx'
 import CompaniesScreen from './screens/companies/CompaniesScreen.tsx'
 import CompaniesDetailsScreen from './screens/companies/CompaniesDetailsScreen.tsx'
+import CompaniesEditScreen from './screens/companies/CompaniesEditScreen.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,6 +32,8 @@ const router = createBrowserRouter(
           {/* company routes */}
           <Route path='/dashboard/companies' element={<CompaniesScreen />} />
           <Route path='/dashboard/companies/:id' element={<CompaniesDetailsScreen />} />
+          <Route path='/dashboard/companies/edit/:id' element={<CompaniesEditScreen />} />
+          
           
 
         </Route>
