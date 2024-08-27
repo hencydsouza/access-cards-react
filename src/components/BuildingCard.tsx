@@ -29,7 +29,7 @@ const BuildingCard = (props: { state: { name: string; _id: string; address: stri
                 {/* <div className="card-content-button-container hidden sm:block">
                     {buildingBlack}
                 </div> */}
-                <LinkContainer to={`${state._id}`} className="cursor-pointer h-[18px] sm:h-[24px]" state={state}>
+                <LinkContainer to={`${state._id}`} className="cursor-pointer h-[18px] sm:h-[24px] min-w-[24px]" state={state}>
                     {eye}
                 </LinkContainer>
             </div>
