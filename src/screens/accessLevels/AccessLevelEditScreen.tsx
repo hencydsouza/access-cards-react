@@ -181,15 +181,15 @@ const AccessLevelEditScreen = () => {
                             <table className="w-full md:w-auto text-sm text-left rtl:text-right">
                                 <thead className="text-xs bg-[#E8F1FD] text-[#0B3F7F]">
                                     <tr>
-                                        <th scope="col" className="py-[0.813rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem]">Resource</th>
-                                        <th scope="col" className="py-[0.813rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem]">Action</th>
-                                        <th scope="col" className="py-[0.813rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem]"></th>
+                                        <th scope="col" className="py-[0.813rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">Resource</th>
+                                        <th scope="col" className="py-[0.813rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">Action</th>
+                                        <th scope="col" className="py-[0.813rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {input.permissions.map((permission, index) => (
                                         <tr key={index} className="text-black">
-                                            <th scope="row" className="font-medium whitespace-nowrap py-[0.5rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem] text-wrap md:text-nowrap">{permission.resource}</th>
+                                            <th scope="row" className="font-medium whitespace-nowrap py-[0.5rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem] text-wrap md:text-nowrap">{permission.resource}</th>
                                             <td className="py-[0.3rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">{permission.action}</td>
                                             <td className="py-[0.3rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">
                                                 <Button variant="danger" onClick={() => handleDeletePermission(permission.resource)} className="flex items-center justify-center gap-2">
