@@ -26,13 +26,18 @@ const CompaniesAddScreen = () => {
 
     useEffect(() => {
         const fetchBuildingNames = async () => {
-            const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-            // console.log(response.data)
-            setBuildingNames(response.data)
+            try {
+                const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
+                setBuildingNames(response.data)
+                setIsLoading(false)
+            } catch (error) {
+                console.error('Error fetching building names:', error)
+                toast.error('Failed to fetch building names')
+                setIsLoading(false)
+            }
         }
 
         fetchBuildingNames()
-        setIsLoading(false)
     }, [auth])
 
 

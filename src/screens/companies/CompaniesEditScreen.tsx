@@ -28,28 +28,40 @@ const CompaniesEditScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken(`/company/${params.id}`, auth.accessToken)
-            // console.log(response.data)
-            setCompany(response.data)
-            setInput({
-                name: response.data.name,
-                buildingId: response.data.buildings.buildingId,
-                ownedBuildings: response.data.ownedBuildings.map((building: { buildingId: string }) => ({ buildingId: building.buildingId }))
-            })
+            try {
+                const response = await useApiClient._getWithToken(`/company/${params.id}`, auth.accessToken)
+                setCompany(response.data)
+                setInput({
+                    name: response.data.name,
+                    buildingId: response.data.buildings.buildingId,
+                    ownedBuildings: response.data.ownedBuildings.map((building: { buildingId: string }) => ({ buildingId: building.buildingId }))
+                })
+            } catch (error) {
+                console.error('Error fetching company data:', error)
+                toast.error('Failed to fetch company data')
+            }
         }
+
         const fetchBuildingNames = async () => {
-            const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-            // console.log(response.data)
-            setBuildingNames(response.data)
+            try {
+                const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
+                setBuildingNames(response.data)
+            } catch (error) {
+                console.error('Error fetching building names:', error)
+                toast.error('Failed to fetch building names')
+            }
         }
 
-        if (reloading) {
-            setReloading(false);
+        const loadData = async () => {
+            setIsLoading(true)
+            await Promise.all([fetchData(), fetchBuildingNames()])
+            setIsLoading(false)
+            if (reloading) {
+                setReloading(false)
+            }
         }
 
-        fetchData()
-        fetchBuildingNames()
-        setIsLoading(false)
+        loadData()
     }, [auth, params.id, reloading, setReloading])
 
 

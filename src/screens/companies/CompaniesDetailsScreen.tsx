@@ -16,10 +16,14 @@ const CompaniesDetailsScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken(`/company/${params.id}`, auth.accessToken)
-            // console.log(response.data)
-            setCompany(response.data)
-            setIsLoading(false)
+            try {
+                const response = await useApiClient._getWithToken(`/company/${params.id}`, auth.accessToken)
+                setCompany(response.data)
+            } catch (error) {
+                console.error('Error fetching company data:', error)
+            } finally {
+                setIsLoading(false)
+            }
         }
         fetchData()
     }, [auth, params.id])

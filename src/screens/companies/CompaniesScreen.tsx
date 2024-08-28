@@ -15,11 +15,15 @@ const CompaniesScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken('/company?limit=100', auth.accessToken)
-            console.log(response.data.results)
-            setCompanies(response.data.results)
-
-            setIsLoading(false)
+            try {
+                const response = await useApiClient._getWithToken('/company?limit=100', auth.accessToken)
+                console.log(response.data.results)
+                setCompanies(response.data.results)
+            } catch (error) {
+                console.error('Error fetching companies:', error)
+            } finally {
+                setIsLoading(false)
+            }
         }
         fetchData()
     }, [auth])
