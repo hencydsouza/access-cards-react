@@ -48,15 +48,15 @@ const AccessLevelsDetailsScreen = () => {
                     <div className="bg-white px-[1rem] md:px-[2rem] py-[2rem] rounded-[1.5rem] border border-[#e8f1fc] mt-8 flex flex-col gap-[1rem] md:gap-[1.5rem]">
                         <div>
                             <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#0B3F7F]">Name</p>
-                            <p className="font-bold lg:text-[1.6rem] md:text-[1.4rem] text-[1.3rem]">{accessLevels.name}</p>
+                            <p className="font-bold lg:text-[1.4rem] md:text-[1.2rem] text-[1.1rem]">{accessLevels.name}</p>
                         </div>
                         <div>
                             <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#0B3F7F]">Type</p>
-                            <p className="font-medium lg:text-[1.3rem] md:text-[1.1rem] text-[1rem] text-[#4b4b4b]">{accessLevels.type}</p>
+                            <p className="font-medium lg:text-[1.1rem] md:text-[0.9rem] text-[0.8rem] text-[#4b4b4b]">{accessLevels.type}</p>
                         </div>
                         <div>
                             <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#0B3F7F]">Description</p>
-                            <p className="font-medium lg:text-[1.3rem] md:text-[1.1rem] text-[1rem] text-[#4b4b4b]">{accessLevels.description}</p>
+                            <p className="font-medium lg:text-[1.1rem] md:text-[0.9rem] text-[0.8rem] text-[#4b4b4b]">{accessLevels.description}</p>
                         </div>
                         <div>
                             <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#0B3F7F]">Permissions</p>
