@@ -14,31 +14,34 @@ const EmployeesScreen = () => {
         name: "name",
         _id: "_id"
     }])
-    // const [buildingNames, setBuildingNames] = useState<{ name: string, id: string }[]>([{
-    //     name: "",
-    //     id: ""
-    // }])
 
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken('/employee?limit=100', auth.accessToken)
-            setEmployees(response.data.results)
+            try {
+                const response = await useApiClient._getWithToken('/employee?limit=100', auth.accessToken)
+                setEmployees(response.data.results)
+            } catch (error) {
+                console.error('Error fetching employees:', error)
+            }
         }
         const fetchCompanyNames = async () => {
-            const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-            setCompanyNames(response.data)
+            try {
+                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
+                setCompanyNames(response.data)
+            } catch (error) {
+                console.error('Error fetching company names:', error)
+            }
         }
-        // const fetchBuildingNames = async () => {
-        //     const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-        //     setBuildingNames(response.data)
-        // }
 
-        fetchData()
-        fetchCompanyNames()
-        // fetchBuildingNames()
-        setIsLoading(false)
+        const loadData = async () => {
+            setIsLoading(true)
+            await Promise.all([fetchData(), fetchCompanyNames()])
+            setIsLoading(false)
+        }
+
+        loadData()
     }, [auth])
 
     return (
