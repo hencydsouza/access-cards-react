@@ -29,28 +29,51 @@ const EmployeeDetailsScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken(`/employee/${params.id}`, auth.accessToken)
-            console.log(response.data)
-            setEmployee(response.data)
+            try {
+                const response = await useApiClient._getWithToken(`/employee/${params.id}`, auth.accessToken)
+                console.log(response.data)
+                setEmployee(response.data)
+            } catch (error) {
+                console.error('Error fetching employee data:', error)
+            }
         }
         const fetchCompanyNames = async () => {
-            const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-            setCompanyNames(response.data)
+            try {
+                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
+                setCompanyNames(response.data)
+            } catch (error) {
+                console.error('Error fetching company names:', error)
+            }
         }
         const fetchBuildingNames = async () => {
-            const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-            setBuildingNames(response.data)
+            try {
+                const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
+                setBuildingNames(response.data)
+            } catch (error) {
+                console.error('Error fetching building names:', error)
+            }
         }
         const fetchAccessLevelNames = async () => {
-            const response = await useApiClient._getWithToken('/access-level/accessLevelNames', auth.accessToken)
-            setAccessLevelNames(response.data)
+            try {
+                const response = await useApiClient._getWithToken('/access-level/accessLevelNames', auth.accessToken)
+                setAccessLevelNames(response.data)
+            } catch (error) {
+                console.error('Error fetching access level names:', error)
+            }
         }
 
-        fetchData()
-        fetchCompanyNames()
-        fetchBuildingNames()
-        fetchAccessLevelNames()
-        setIsLoading(false)
+        const fetchAllData = async () => {
+            setIsLoading(true)
+            await Promise.all([
+                fetchData(),
+                fetchCompanyNames(),
+                fetchBuildingNames(),
+                fetchAccessLevelNames()
+            ])
+            setIsLoading(false)
+        }
+
+        fetchAllData()
     }, [auth, params.id])
 
     return (
@@ -65,7 +88,7 @@ const EmployeeDetailsScreen = () => {
                         <p className="text-[0.7rem] md:text-[1rem] font-medium text-[#B3B3B3] m-0">View employee details</p>
                     </div>
 
-                    <LinkContainer to={`/dashboard/employee/edit/${employee.id}`} state={employee}>
+                    <LinkContainer to={`/dashboard/employees/edit/${employee.id}`} state={employee}>
                         <Button variant="primary" type="submit" className="flex  items-center justify-center gap-2">
                             <i className="fa-regular fa-pen-to-square"></i>
                             Edit
@@ -98,9 +121,11 @@ const EmployeeDetailsScreen = () => {
                             <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#b3b3b3]">Access Levels</p>
                             <div className="flex flex-col gap-2 mt-2">
                                 {
-                                    employee.accessLevels.map((item, index) => (
-                                        <p key={index} className="font-medium lg:text-[1rem] md:text-[0.8rem] text-[0.6rem] px-2 py-2 border bg-[#e8f1fd] text-[#0b3f7f] rounded-md sm:max-w-max">{accessLevelNames.find((name) => name.id === item.accessLevel)?.name}</p>
-                                    ))
+                                    employee.accessLevels.length
+                                        ? employee.accessLevels.map((item, index) => (
+                                            <p key={index} className="font-medium lg:text-[1rem] md:text-[0.8rem] text-[0.6rem] px-2 py-2 border bg-[#e8f1fd] text-[#0b3f7f] rounded-md sm:max-w-max">{accessLevelNames.find((name) => name.id === item.accessLevel)?.name}</p>
+                                        ))
+                                        : <p className="font-bold lg:text-[1.4rem] md:text-[1.2rem] text-[1.1rem]">none</p>
                                 }
                             </div>
                         </div>
