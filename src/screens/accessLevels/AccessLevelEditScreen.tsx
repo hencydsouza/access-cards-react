@@ -65,18 +65,18 @@ const AccessLevelEditScreen = () => {
                         permissions: input.permissions
                     }, auth.accessToken)
                 console.log(result.status)
-                toast.success('Update successful', { theme: 'dark', position: "bottom-right" })
+                toast.success('Update successful', { theme: "colored", position: "bottom-right" })
             } catch (error: any) {
                 // // console.log(error.response.data.code)
                 // if (error.response.data.code === 400) {
-                //     toast.error("Please wait for 5 seconds before updating again", { theme: 'dark', position: "bottom-right" })
+                //     toast.error("Please wait for 5 seconds before updating again", { theme: "colored", position: "bottom-right" })
                 // } else
-                toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+                toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
             }
             setReloading(true)
             return
         }
-        toast.error('Please enter update fields', { theme: 'dark', position: "bottom-right" })
+        toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
     }
 
     const areArraysEqual = (arr1: any[], arr2: any[]) => {
@@ -121,7 +121,7 @@ const AccessLevelEditScreen = () => {
             })
             return
         }
-        toast.error('Please enter valid permission', { theme: 'dark', position: "bottom-right" })
+        toast.error('Please enter valid permission', { theme: "colored", position: "bottom-right" })
     }
 
     const handleDeletePermission = (resource: string) => {
@@ -135,10 +135,10 @@ const AccessLevelEditScreen = () => {
         try {
             const result = await useApiClient._deleteWithToken(`/access-level/${accessLevels.id}`, auth.accessToken)
             console.log(result.status)
-            toast.success('Access Level deleted successfully', { theme: 'dark', position: "bottom-right" })
+            toast.success('Access Level deleted successfully', { theme: "colored", position: "bottom-right" })
             navigate("/dashboard/access-levels")
         } catch (error: any) {
-            toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
         }
     }
 

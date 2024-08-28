@@ -48,11 +48,11 @@ const BuildingsAddScreen = () => {
                     console.log(resultB.status)
                 }
                 navigate(`/dashboard/buildings/${result.data.id}`)
-                toast.success("Building created successfully", { theme: 'dark', position: "bottom-right" })
+                toast.success("Building created successfully", { theme: "colored", position: "bottom-right" })
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-            toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
         }
     }
 

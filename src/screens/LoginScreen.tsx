@@ -22,7 +22,7 @@ const LoginScreen = () => {
             auth.loginAction(input)
             return
         }
-        toast.error('Please fill all the fields', { theme: 'dark', position: "bottom-right" })
+        toast.error('Please fill all the fields', { theme: "colored", position: "bottom-right" })
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

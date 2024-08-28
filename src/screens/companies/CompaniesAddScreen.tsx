@@ -44,20 +44,20 @@ const CompaniesAddScreen = () => {
                 if (input.ownedBuildings.length > 0) {
                     const result = await useApiClient._postWithToken(`/company`, { name: input.name, buildingId: input.buildingId, ownedBuildings: input.ownedBuildings }, auth.accessToken)
                     console.log(result.status)
-                    toast.success('Company created successfully', { theme: 'dark', position: "bottom-right" })
+                    toast.success('Company created successfully', { theme: "colored", position: "bottom-right" })
                     navigate(`/dashboard/companies/${result.data.id}`)
                 } else {
                     const result = await useApiClient._postWithToken(`/company`, { name: input.name, buildingId: input.buildingId }, auth.accessToken)
                     console.log(result.status)
-                    toast.success('Company created successfully', { theme: 'dark', position: "bottom-right" })
+                    toast.success('Company created successfully', { theme: "colored", position: "bottom-right" })
                     navigate(`/dashboard/companies/${result.data.id}`)
                 }
                 return
             }
-            toast.error("Please fill all the fields", { theme: 'dark', position: "bottom-right" })
+            toast.error("Please fill all the fields", { theme: "colored", position: "bottom-right" })
         } catch (error: any) {
             // console.log(error.response.data.code)
-            toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
         }
     }
 

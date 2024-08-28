@@ -56,13 +56,13 @@ export const AuthProvider = (props: { children: any }) => {
                 setRefreshToken(response.data.tokens.refresh.token)
                 localStorage.setItem("refreshToken", response.data.tokens.refresh.token)
                 navigate('/dashboard')
-                toast.success("Login successful", { theme: "dark", position: "bottom-right" })
+                toast.success("Login successful", { theme: "colored", position: "bottom-right" })
                 return
             }
             throw new Error("Something went wrong")
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            toast.error(err.response.data.message, { theme: "dark", position: "bottom-right" })
+            toast.error(err.response.data.message, { theme: "colored", position: "bottom-right" })
             // console.log(err)
         }
     }
@@ -75,7 +75,7 @@ export const AuthProvider = (props: { children: any }) => {
         await useApiClient._post('/auth/logout', {
             refreshToken
         })
-        toast.success("Logout successful", { theme: "dark", position: "bottom-right" })
+        toast.success("Logout successful", { theme: "colored", position: "bottom-right" })
         navigate("/login")
     }
 

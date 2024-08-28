@@ -65,16 +65,16 @@ const BuildingsEditScreen = () => {
                     console.log(resultB.status)
                 }
                 if (result.status === 200) {
-                    toast.success('Update successful', { theme: 'dark', position: "bottom-right" })
+                    toast.success('Update successful', { theme: "colored", position: "bottom-right" })
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
-                toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+                toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
             }
             setReloading(true)
             return
         }
-        toast.error('Please enter update fields', { theme: 'dark', position: "bottom-right" })
+        toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,11 +90,11 @@ const BuildingsEditScreen = () => {
         try {
             const result = await useApiClient._deleteWithToken(`/building/${building._id}`, auth.accessToken)
             console.log(result.status)
-            toast.success('Building deleted successfully', { theme: 'dark', position: "bottom-right" })
+            toast.success('Building deleted successfully', { theme: "colored", position: "bottom-right" })
             navigate("/dashboard/buildings")
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-            toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
         }
     }
 

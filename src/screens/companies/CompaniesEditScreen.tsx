@@ -60,18 +60,18 @@ const CompaniesEditScreen = () => {
                 console.log(input)
                 const result = await useApiClient._patchWithToken(`/company/${company.id}`, { name: input.name, buildingId: input.buildingId, ownedBuildings: input.ownedBuildings }, auth.accessToken)
                 console.log(result.status)
-                toast.success('Update successful', { theme: 'dark', position: "bottom-right" })
+                toast.success('Update successful', { theme: "colored", position: "bottom-right" })
             } catch (error: any) {
                 // console.log(error.response.data.code)
                 if (error.response.data.code === 400) {
-                    toast.error("Please wait for 5 seconds before updating again", { theme: 'dark', position: "bottom-right" })
+                    toast.error("Please wait for 5 seconds before updating again", { theme: "colored", position: "bottom-right" })
                 } else
-                    toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+                    toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
             }
             setReloading(true)
             return
         }
-        toast.error('Please enter update fields', { theme: 'dark', position: "bottom-right" })
+        toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
     }
 
     const areArraysEqual = (arr1: any[], arr2: any[]) => {
@@ -118,10 +118,10 @@ const CompaniesEditScreen = () => {
         try {
             const result = await useApiClient._deleteWithToken(`/company/${company.id}`, auth.accessToken)
             console.log(result.status)
-            toast.success('Company deleted successfully', { theme: 'dark', position: "bottom-right" })
+            toast.success('Company deleted successfully', { theme: "colored", position: "bottom-right" })
             navigate("/dashboard/companies")
         } catch (error: any) {
-            toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
         }
     }
 

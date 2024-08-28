@@ -38,14 +38,14 @@ const AccessLevelAddScreen = () => {
                         permissions: input.permissions
                     }, auth.accessToken)
                 console.log(result.status)
-                toast.success('Access level created successfully', { theme: 'dark', position: "bottom-right" })
+                toast.success('Access level created successfully', { theme: "colored", position: "bottom-right" })
                 navigate(`/dashboard/access-levels/${result.data.id}`)
             } catch (error: any) {
-                toast.error(error.response.data.message, { theme: 'dark', position: "bottom-right" })
+                toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
             }
             return
         }
-        toast.error('Please enter update fields', { theme: 'dark', position: "bottom-right" })
+        toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
     }
 
     const handleInput = (e: any) => {
@@ -82,7 +82,7 @@ const AccessLevelAddScreen = () => {
             })
             return
         }
-        toast.error('Please enter valid permission', { theme: 'dark', position: "bottom-right" })
+        toast.error('Please enter valid permission', { theme: "colored", position: "bottom-right" })
     }
 
     const handleDeletePermission = (resource: string) => {
