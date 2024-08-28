@@ -45,7 +45,7 @@ const AccessLevelAddScreen = () => {
             }
             return
         }
-        toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
+        toast.error('Please enter all fields', { theme: "colored", position: "bottom-right" })
     }
 
     const handleInput = (e: any) => {

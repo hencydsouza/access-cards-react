@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useLocation, useNavigate, useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { useAuth } from "../../hooks/AuthProvider"
 import { useEffect, useState } from "react"
 import useApiClient from "../../hooks/ApiClient"
@@ -8,11 +8,10 @@ import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { Button, Form } from "react-bootstrap"
 
-const EmployeeEditScreen = () => {
+const EmployeeAddScreen = () => {
     const auth = useAuth()
     const params = useParams()
     const navigate = useNavigate()
-    const [employee, setEmployee] = useState<{ name: string, id: string, email: string, company: { buildingId: string, companyId: string }, permissions: { resource: string, action: string, type: string }[], accessLevels: { accessLevel: string }[] }>(useLocation().state)
     const [buildingNames, setBuildingNames] = useState<{ name: string, id: string }[]>([{
         name: "",
         id: ""
@@ -31,27 +30,12 @@ const EmployeeEditScreen = () => {
     const [input, setInput] = useState<{ name: string, email: string, buildingId: string, companyId: string, accessLevels: { accessLevel: string }[] | [] }>({
         name: "",
         email: "",
-        buildingId: "",
-        companyId: "",
+        buildingId: "none",
+        companyId: "none",
         accessLevels: []
     })
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken(`/employee/${params.id}`, auth.accessToken)
-                setEmployee(response.data)
-                setInput({
-                    name: response.data.name,
-                    buildingId: response.data.company.buildingId,
-                    companyId: response.data.company.companyId,
-                    email: response.data.email,
-                    accessLevels: response.data.accessLevels
-                })
-            } catch (error) {
-                console.error('Error fetching employee data:', error)
-            }
-        }
         const fetchBuildingNames = async () => {
             try {
                 const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
@@ -79,7 +63,6 @@ const EmployeeEditScreen = () => {
 
         const fetchAllData = async () => {
             await Promise.all([
-                fetchData(),
                 fetchBuildingNames(),
                 fetchCompanyNames(),
                 fetchAccessLevelNames()
@@ -98,10 +81,10 @@ const EmployeeEditScreen = () => {
 
     const handleSubmitEvent = async (e: any) => {
         e.preventDefault();
-        if (input.name !== employee.name || input.buildingId !== employee.company.buildingId || input.companyId !== employee.company.companyId || input.email !== employee.email || !areArraysEqual(input.accessLevels, employee.accessLevels)) {
+        if (input.name !== "" || input.buildingId !== "none" || input.companyId !== "none" || input.email !== "" || input.accessLevels.length !== 0) {
             try {
                 console.log(input)
-                const result = await useApiClient._patchWithToken(`/employee/${employee.id}`, {
+                const result = await useApiClient._postWithToken(`/employee/`, {
                     name: input.name,
                     email: input.email,
                     buildingId: input.buildingId,
@@ -109,22 +92,14 @@ const EmployeeEditScreen = () => {
                     accessLevels: input.accessLevels
                 }, auth.accessToken)
                 console.log(result.status)
-                toast.success('Update successful', { theme: "colored", position: "bottom-right" })
+                toast.success('Employee created successfully', { theme: "colored", position: "bottom-right" })
+                navigate(`/dashboard/employees/${result.data.id}`)
             } catch (error: any) {
                 toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
             }
-            setReloading(true)
             return
         }
-        toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
-    }
-
-    const areArraysEqual = (arr1: any[], arr2: any[]) => {
-        if (arr1.length !== arr2.length) return false;
-        for (let i = 0; i < arr1.length; i++) {
-            if (arr1[i] !== arr2[i]) return false;
-        }
-        return true;
+        toast.error('Please enter all fields', { theme: "colored", position: "bottom-right" })
     }
 
     const handleInput = (e: any) => {
@@ -144,7 +119,6 @@ const EmployeeEditScreen = () => {
                 : [{ accessLevel: value }]
         }))
         e.target.value = "none"
-        // console.log(input)
     }
 
     const handleAccessLevelRemoval = (e: any) => {
@@ -154,17 +128,6 @@ const EmployeeEditScreen = () => {
         }))
     }
 
-    const handleDelete = async () => {
-        try {
-            const result = await useApiClient._deleteWithToken(`/employee/${employee.id}`, auth.accessToken)
-            console.log(result.status)
-            toast.success('employee deleted successfully', { theme: "colored", position: "bottom-right" })
-            navigate("/dashboard/employees")
-        } catch (error: any) {
-            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
-        }
-    }
-
     return (
         !isLoading ? (
             < div >
@@ -172,8 +135,7 @@ const EmployeeEditScreen = () => {
                     <div>
                         <BreadcrumbContainer>
                             <Breadcrumb link="/dashboard/employees" text="Employees" />
-                            <Breadcrumb state={employee} link={`/dashboard/employees/${employee.id}`} text={employee.name} />
-                            <Breadcrumb active text="Edit" />
+                            <Breadcrumb active text="Add New Employee" />
                         </BreadcrumbContainer>
                         <p className="text-[0.7rem] md:text-[1rem] font-medium text-[#B3B3B3] m-0">Update employee</p>
                     </div>
@@ -194,9 +156,10 @@ const EmployeeEditScreen = () => {
                         <Form.Group>
                             <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Company</Form.Label>
                             <Form.Select required onChange={handleInput} name="companyId" aria-label="Default select example">
+                                <option value="none" >Select a company</option>
                                 {
                                     companyNames.map((companyName, index) => {
-                                        return <option key={index} selected={employee.company.companyId === companyName._id ? true : false} value={companyName._id} >{companyName.name}</option>
+                                        return <option key={index} value={companyName._id} >{companyName.name}</option>
                                     })
                                 }
                             </Form.Select>
@@ -205,9 +168,10 @@ const EmployeeEditScreen = () => {
                         <Form.Group>
                             <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Building</Form.Label>
                             <Form.Select required onChange={handleInput} name="buildingId" aria-label="Default select example">
+                                <option value="none" >Select a building</option>
                                 {
                                     buildingNames.map((buildingName, index) => {
-                                        return <option key={index} selected={employee.company.buildingId === buildingName.id ? true : false} value={buildingName.id} >{buildingName.name}</option>
+                                        return <option key={index} value={buildingName.id} >{buildingName.name}</option>
                                     })
                                 }
                             </Form.Select>
@@ -220,7 +184,6 @@ const EmployeeEditScreen = () => {
                                 <option value="none">Select a access level to add</option>
                                 {
                                     accessLevelNames.map((accessLevelName, index) => {
-                                        // selected={building.company[0] && (building.company[0]._id === accessLevelName._id) ? true : false}
                                         return <option key={index} value={accessLevelName.id} >{accessLevelName.name}</option>
                                     })
                                 }
@@ -239,17 +202,8 @@ const EmployeeEditScreen = () => {
 
                         <div className="flex flex-col sm:flex-row gap-2">
                             <Button type="submit" className="flex  items-center justify-center gap-2">
-                                <i className="fa-regular fa-pen-to-square"></i>
-                                Update
-                            </Button>
-
-                            <Button onClick={() => {
-                                if (window.confirm("Are you sure you want to delete this employee?")) {
-                                    handleDelete()
-                                }
-                            }} variant="danger" className="flex  items-center justify-center gap-2">
-                                <i className="fa-solid fa-trash"></i>
-                                Delete
+                                <i className="fa-solid fa-plus"></i>
+                                Create
                             </Button>
                         </div>
                     </Form>
@@ -259,4 +213,4 @@ const EmployeeEditScreen = () => {
     )
 }
 
-export default EmployeeEditScreen
+export default EmployeeAddScreen
