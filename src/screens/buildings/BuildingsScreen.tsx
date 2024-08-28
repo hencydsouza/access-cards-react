@@ -14,10 +14,14 @@ const BuildingsScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken('/building', auth.accessToken)
-            // console.log(response.data)
-            setBuildings(response.data)
-            setIsLoading(false)
+            try {
+                const response = await useApiClient._getWithToken('/building', auth.accessToken)
+                setBuildings(response.data)
+            } catch (error) {
+                console.error('Error fetching buildings:', error)
+            } finally {
+                setIsLoading(false)
+            }
         }
         fetchData()
     }, [auth])

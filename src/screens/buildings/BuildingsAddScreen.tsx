@@ -27,13 +27,17 @@ const BuildingsAddScreen = () => {
 
     useEffect(() => {
         const fetchCompanyNames = async () => {
-            const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-            // console.log(response.data)
-            setCompanyNames(response.data)
+            try {
+                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
+                setCompanyNames(response.data)
+                setIsLoading(false)
+            } catch (error) {
+                console.error('Error fetching company names:', error)
+                toast.error('Failed to fetch company names')
+            }
         }
 
         fetchCompanyNames()
-        setIsLoading(false)
     }, [auth])
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

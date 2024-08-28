@@ -16,10 +16,14 @@ const BuildingsDetailsScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken(`/building/${params.id}`, auth.accessToken)
-            // console.log(response.data[0])
-            setBuilding(response.data[0])
-            setIsLoading(false)
+            try {
+                const response = await useApiClient._getWithToken(`/building/${params.id}`, auth.accessToken)
+                setBuilding(response.data[0])
+            } catch (error) {
+                console.error("Error fetching building data:", error)
+            } finally {
+                setIsLoading(false)
+            }
         }
         fetchData()
     }, [auth, params.id])

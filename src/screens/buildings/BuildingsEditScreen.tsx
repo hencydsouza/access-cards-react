@@ -30,28 +30,46 @@ const BuildingsEditScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken(`/building/${params.id}`, auth.accessToken)
-            // // console.log(response.data[0])
-            setBuilding(response.data[0])
-            setInput({
-                name: response.data[0].name,
-                address: response.data[0].address,
-                company: response.data[0].company[0] ? response.data[0].company[0]._id : "none"
-            })
+            try {
+                const response = await useApiClient._getWithToken(`/building/${params.id}`, auth.accessToken)
+                setBuilding(response.data[0])
+                setInput({
+                    name: response.data[0].name,
+                    address: response.data[0].address,
+                    company: response.data[0].company[0] ? response.data[0].company[0]._id : "none"
+                })
+            } catch (error) {
+                console.error("Error fetching building data:", error)
+                toast.error("Failed to fetch building data")
+            }
         }
+
         const fetchCompanyNames = async () => {
-            const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-            // console.log(response.data)
-            setCompanyNames(response.data)
+            try {
+                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
+                setCompanyNames(response.data)
+            } catch (error) {
+                console.error("Error fetching company names:", error)
+                toast.error("Failed to fetch company names")
+            }
         }
 
-        if (reloading) {
-            setReloading(false);
+        const loadData = async () => {
+            setIsLoading(true)
+            try {
+                await Promise.all([fetchData(), fetchCompanyNames()])
+            } catch (error) {
+                console.error("Error loading data:", error)
+                toast.error("Failed to load data")
+            } finally {
+                setIsLoading(false)
+                if (reloading) {
+                    setReloading(false)
+                }
+            }
         }
 
-        fetchData()
-        fetchCompanyNames()
-        setIsLoading(false)
+        loadData()
     }, [auth, params.id, reloading, setReloading])
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
