@@ -55,7 +55,6 @@ const BuildingsEditScreen = () => {
         }
 
         const loadData = async () => {
-            setIsLoading(true)
             try {
                 await Promise.all([fetchData(), fetchCompanyNames()])
             } catch (error) {

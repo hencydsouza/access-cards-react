@@ -53,7 +53,6 @@ const CompaniesEditScreen = () => {
         }
 
         const loadData = async () => {
-            setIsLoading(true)
             await Promise.all([fetchData(), fetchBuildingNames()])
             setIsLoading(false)
             if (reloading) {

@@ -22,6 +22,7 @@ import AccessLevelEditScreen from './screens/accessLevels/AccessLevelEditScreen.
 import AccessLevelAddScreen from './screens/accessLevels/AccessLevelAddScreen.tsx'
 import EmployeesScreen from './screens/employees/EmployeesScreen.tsx'
 import EmployeeDetailsScreen from './screens/employees/EmployeeDetailsScreen.tsx'
+import EmployeeEditScreen from './screens/employees/EmployeeEditScreen.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -49,6 +50,7 @@ const router = createBrowserRouter(
           {/* employees routes */}
           <Route path='/dashboard/employees' element={<EmployeesScreen />} />
           <Route path='/dashboard/employees/:id' element={<EmployeeDetailsScreen />} />
+          <Route path='/dashboard/employees/edit/:id' element={<EmployeeEditScreen />} />
 
 
 
