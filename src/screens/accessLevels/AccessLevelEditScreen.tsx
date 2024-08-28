@@ -44,7 +44,6 @@ const AccessLevelEditScreen = () => {
                 })
             } catch (error) {
                 console.error("Error fetching access level:", error)
-                toast.error("Failed to fetch access level data")
             } finally {
                 setIsLoading(false)
                 if (reloading) {

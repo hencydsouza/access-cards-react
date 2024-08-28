@@ -50,7 +50,6 @@ const EmployeeEditScreen = () => {
                 })
             } catch (error) {
                 console.error('Error fetching employee data:', error)
-                toast.error('Failed to fetch employee data')
             }
         }
         const fetchBuildingNames = async () => {
@@ -59,7 +58,6 @@ const EmployeeEditScreen = () => {
                 setBuildingNames(response.data)
             } catch (error) {
                 console.error('Error fetching building names:', error)
-                toast.error('Failed to fetch building names')
             }
         }
         const fetchCompanyNames = async () => {
@@ -68,7 +66,6 @@ const EmployeeEditScreen = () => {
                 setCompanyNames(response.data)
             } catch (error) {
                 console.error('Error fetching company names:', error)
-                toast.error('Failed to fetch company names')
             }
         }
         const fetchAccessLevelNames = async () => {
@@ -77,7 +74,6 @@ const EmployeeEditScreen = () => {
                 setAccessLevelNames(response.data)
             } catch (error) {
                 console.error('Error fetching access level names:', error)
-                toast.error('Failed to fetch access level names')
             }
         }
 

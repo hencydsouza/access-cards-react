@@ -38,7 +38,6 @@ const CompaniesEditScreen = () => {
                 })
             } catch (error) {
                 console.error('Error fetching company data:', error)
-                toast.error('Failed to fetch company data')
             }
         }
 
@@ -48,7 +47,6 @@ const CompaniesEditScreen = () => {
                 setBuildingNames(response.data)
             } catch (error) {
                 console.error('Error fetching building names:', error)
-                toast.error('Failed to fetch building names')
             }
         }
 

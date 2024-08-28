@@ -33,7 +33,6 @@ const BuildingsAddScreen = () => {
                 setIsLoading(false)
             } catch (error) {
                 console.error('Error fetching company names:', error)
-                toast.error('Failed to fetch company names')
             }
         }
 

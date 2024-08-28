@@ -40,7 +40,6 @@ const BuildingsEditScreen = () => {
                 })
             } catch (error) {
                 console.error("Error fetching building data:", error)
-                toast.error("Failed to fetch building data")
             }
         }
 
@@ -50,7 +49,6 @@ const BuildingsEditScreen = () => {
                 setCompanyNames(response.data)
             } catch (error) {
                 console.error("Error fetching company names:", error)
-                toast.error("Failed to fetch company names")
             }
         }
 
@@ -59,7 +57,6 @@ const BuildingsEditScreen = () => {
                 await Promise.all([fetchData(), fetchCompanyNames()])
             } catch (error) {
                 console.error("Error loading data:", error)
-                toast.error("Failed to load data")
             } finally {
                 setIsLoading(false)
                 if (reloading) {
