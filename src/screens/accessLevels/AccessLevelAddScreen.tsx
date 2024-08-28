@@ -139,8 +139,8 @@ const AccessLevelAddScreen = () => {
                                 {input.permissions.map((permission, index) => (
                                     <tr key={index} className="text-black">
                                         <th scope="row" className="font-medium whitespace-nowrap py-[0.5rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem] text-wrap md:text-nowrap">{permission.resource}</th>
-                                        <td className="py-[0.5rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem]">{permission.action}</td>
-                                        <td className="py-[0.5rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem]">
+                                        <td className="py-[0.3rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">{permission.action}</td>
+                                        <td className="py-[0.3rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">
                                             <Button variant="danger" onClick={() => handleDeletePermission(permission.resource)} className="flex items-center justify-center gap-2">
                                                 <i className="fa-solid fa-trash"></i>
                                             </Button>
@@ -148,10 +148,10 @@ const AccessLevelAddScreen = () => {
                                     </tr>
                                 ))}
                                 <tr className="text-black">
-                                    <th className="py-[0.5rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem]">
+                                    <th className="py-[0.3rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">
                                         <Form.Control type="text" value={permissions.resource} name="resource" onChange={handlePermissionInput} placeholder="Permission" className="" />
                                     </th>
-                                    <td className="py-[0.5rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem]">
+                                    <td className="py-[0.3rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">
                                         {/* <Form.Control required type="text" onChange={handleInput} name="name" placeholder="" className="" /> */}
                                         <Form.Select onChange={handlePermissionInput} value={permissions.action} name="action" aria-label="Default select example">
                                             <option value="none">Select type</option>
@@ -160,7 +160,7 @@ const AccessLevelAddScreen = () => {
                                         </Form.Select>
 
                                     </td>
-                                    <td className="py-[0.5rem] px-[0.5rem] md:px-[2rem] lg:px-[4rem]">
+                                    <td className="py-[0.3rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">
                                         <Button variant="primary" onClick={handleAddPermission} className="flex  items-center justify-center gap-2">
                                             <i className="fa-solid fa-plus"></i>
                                             {/* Add */}
