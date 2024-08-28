@@ -31,24 +31,29 @@ const AccessLevelEditScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken(`/access-level/${params.id}`, auth.accessToken)
-            console.log(response.data)
-            setAccessLevels(response.data)
-            setInput({
-                name: response.data.name,
-                type: response.data.type,
-                id: response.data.id,
-                description: response.data.description,
-                permissions: response.data.permissions || []
-            })
-        }
-
-        if (reloading) {
-            setReloading(false);
+            try {
+                const response = await useApiClient._getWithToken(`/access-level/${params.id}`, auth.accessToken)
+                console.log(response.data)
+                setAccessLevels(response.data)
+                setInput({
+                    name: response.data.name,
+                    type: response.data.type,
+                    id: response.data.id,
+                    description: response.data.description,
+                    permissions: response.data.permissions || []
+                })
+            } catch (error) {
+                console.error("Error fetching access level:", error)
+                toast.error("Failed to fetch access level data")
+            } finally {
+                setIsLoading(false)
+                if (reloading) {
+                    setReloading(false)
+                }
+            }
         }
 
         fetchData()
-        setIsLoading(false)
     }, [auth, params.id, reloading, setReloading])
 
 

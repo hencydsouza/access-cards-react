@@ -16,10 +16,15 @@ const AccessLevelsDetailsScreen = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await useApiClient._getWithToken(`/access-level/${params.id}`, auth.accessToken)
-            console.log(response.data)
-            setAccessLevels(response.data)
-            setIsLoading(false)
+            try {
+                const response = await useApiClient._getWithToken(`/access-level/${params.id}`, auth.accessToken)
+                console.log(response.data)
+                setAccessLevels(response.data)
+                setIsLoading(false)
+            } catch (error) {
+                console.error("Error fetching access level:", error)
+                setIsLoading(false)
+            }
         }
         fetchData()
     }, [auth, params.id])
