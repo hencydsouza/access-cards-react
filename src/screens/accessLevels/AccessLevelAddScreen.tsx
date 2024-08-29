@@ -118,6 +118,7 @@ const AccessLevelAddScreen = () => {
                             <option value="none" >Select a type</option>
                             <option value="building" >building</option>
                             <option value="company" >company</option>
+                            <option value="product" >product</option>
                         </Form.Select>
                     </Form.Group>
 
