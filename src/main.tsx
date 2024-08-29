@@ -27,6 +27,8 @@ import EmployeeAddScreen from './screens/employees/EmployeeAddScreen.tsx'
 import AccessLogsScreen from './screens/accessLogs/AccessLogsScreen.tsx'
 import AccessCardsScreen from './screens/accessCards/AccessCardsScreen.tsx'
 import AccessCardsDetailsScreen from './screens/accessCards/AccessCardsDetailsScreen.tsx'
+import AccessCardsEditScreen from './screens/accessCards/AccessCardsEditScreen.tsx'
+import AccessCardsAddScreen from './screens/accessCards/AccessCardsAddScreen.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -61,6 +63,8 @@ const router = createBrowserRouter(
           {/* Access Card */}
           <Route path='/dashboard/access-cards' element={<AccessCardsScreen />} />
           <Route path='/dashboard/access-cards/:id' element={<AccessCardsDetailsScreen />} />
+          <Route path='/dashboard/access-cards/edit/:id' element={<AccessCardsEditScreen />} />
+          <Route path='/dashboard/access-cards/add' element={<AccessCardsAddScreen />} />
         </Route>
       </Route>
     </Route>

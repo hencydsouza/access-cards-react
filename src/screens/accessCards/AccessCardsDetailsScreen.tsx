@@ -125,10 +125,10 @@ const AccessCardsDetailsScreen = () => {
                                     <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#b3b3b3]">Issued On</p>
                                     <p className="font-bold lg:text-[1.4rem] md:text-[1.2rem] text-[1.1rem] text-[#4b4b4b]">{accessCards.issued_at.split('T')[0]}</p>
                                 </div>
-                                <div>
+                                {/* <div>
                                     <p className="font-medium text-[0.7rem] md:text-[0.8rem] lg:text-[1rem] text-[#b3b3b3]">Valid Until</p>
                                     <p className="font-bold lg:text-[1.4rem] md:text-[1.2rem] text-[1.1rem] text-[#4b4b4b]">{accessCards.valid_until ? accessCards.valid_until.split('T')[0] : 'Not Set'}</p>
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className="font-bold text-0.8rem md:text-[1.5rem] hidden md:block">{accessCards.is_active ? <div className="text-[#268e6c]">ACTIVE</div> : <div className="text-[#d7373f]">INACTIVE</div>}</div>
