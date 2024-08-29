@@ -173,6 +173,7 @@ const AccessLevelEditScreen = () => {
                             <Form.Select required onChange={handleInput} name="type" aria-label="Default select example">
                                 <option value="building" selected={input.type === "building" ? true : false} >building</option>
                                 <option value="company" selected={input.type === "company" ? true : false} >company</option>
+                                <option value="company" selected={input.type === "product" ? true : false} >product</option>
                             </Form.Select>
                         </Form.Group>
 
