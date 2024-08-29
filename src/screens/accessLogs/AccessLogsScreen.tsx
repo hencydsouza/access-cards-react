@@ -139,31 +139,44 @@ const AccessLogsScreen = () => {
                     <div className="lg:flex flex-col mt-4">
                         <div className="-m-1.5 overflow-x-auto">
                             <div className="p-1.5 min-w-full inline-block align-middle">
-                                <div className="border-[#e8f1fd] border-1 rounded-lg overflow-hidden shadow-sm">
+                                <div className="border-[#e8f1fd] border-1 rounded-lg overflow-hidden shadow-sm sm:justify-center">
                                     <table className="min-w-full divide-y">
                                         <thead className="bg-[#e8f1fd] text-[#0b3f7f] font-medium">
-                                            <tr>
-                                                <th scope="col" className="px-6 py-2 text-start text-xs">Employee Name</th>
-                                                <th scope="col" className="px-6 py-2 text-start text-xs">Company</th>
-                                                <th scope="col" className="px-6 py-2 text-start text-xs">Building</th>
-                                                <th scope="col" className="px-6 py-2 text-start text-xs">Timestamp</th>
+                                            <tr className="">
+                                                <th scope="col" className="px-3 lg:px-6 py-2 text-start text-xs hidden lg:table-cell">Employee Name</th>
+                                                <th scope="col" className="px-3 lg:px-6 py-2 text-start text-xs hidden lg:table-cell">Company</th>
+                                                <th scope="col" className="px-3 lg:px-6 py-2 text-start text-xs hidden lg:table-cell">Building</th>
+                                                <th scope="col" className="px-3 lg:px-6 py-2 text-start text-xs hidden lg:table-cell">Timestamp</th>
+                                                <p className="px-3 lg:px-6 py-2 lg:hidden text-sm font-bold">Logs Table</p>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y bg-white">
+                                        <tbody className="divide-y-[0.2rem] lg:divide-y bg-white">
                                             {
                                                 accessLogs.map((data) => {
                                                     return (
-                                                        <tr>
-                                                            <td className="px-6 py-2 whitespace-nowrap text-sm font-medium">{employeeNames.find((item) => item.id == data.employeeId)?.name}</td>
-                                                            <td className="px-6 py-2 whitespace-nowrap text-sm">{companyNames.find((item) => item._id == data.companyId)?.name || "Not Found"}</td>
-                                                            <td className="px-6 py-2 whitespace-nowrap text-sm">{buildingNames.find((item) => item.id == data.buildingId)?.name}</td>
-                                                            <td className="px-6 py-2 whitespace-nowrap text-sm">{data.timestamp}</td>
+                                                        <tr className="flex flex-col lg:table-row">
+                                                            <td className="px-3 lg:px-6 py-2 whitespace-nowrap text-sm font-medium">
+                                                                <p className="text-[#0b3f7f] text-[0.6rem] lg:hidden">Employee Name</p>
+                                                                {employeeNames.find((item) => item.id == data.employeeId)?.name}
+                                                            </td>
+                                                            <td className="px-3 lg:px-6 py-2 whitespace-nowrap text-sm">
+                                                                <p className="text-[#0b3f7f] text-[0.6rem] lg:hidden">Company Name</p>
+                                                                {companyNames.find((item) => item._id == data.companyId)?.name || "Not Found"}
+                                                            </td>
+                                                            <td className="px-3 lg:px-6 py-2 whitespace-nowrap text-sm">
+                                                                <p className="text-[#0b3f7f] text-[0.6rem] lg:hidden">Building Name</p>
+                                                                {buildingNames.find((item) => item.id == data.buildingId)?.name}
+                                                            </td>
+                                                            <td className="px-3 lg:px-6 py-2 whitespace-nowrap text-sm">
+                                                                <p className="text-[#0b3f7f] text-[0.6rem] lg:hidden">Timestamp</p>
+                                                                {data.timestamp}
+                                                            </td>
                                                         </tr>
                                                     )
                                                 })
                                             }
-                                            <tr>
-                                                <td className="px-6 py-2 whitespace-nowrap text-sm flex  items-center gap-2 justify-start">
+                                            <tr className="flex justify-between lg:table-row">
+                                                <td className="px-3 lg:px-6 py-2 whitespace-nowrap text-sm flex  items-center gap-2 justify-end lg:justify-start">
                                                     <Button variant="outline-primary" onClick={() => {
                                                         if (page - 1 >= 1)
                                                             setPage(page - 1)
@@ -178,10 +191,10 @@ const AccessLogsScreen = () => {
                                                         <i className="fa-solid fa-chevron-right"></i>
                                                     </Button>
                                                 </td>
-                                                <td className="px-6 py-2 whitespace-nowrap text-sm"></td>
-                                                <td className="px-6 py-2 whitespace-nowrap text-sm"></td>
-                                                <td className="px-6 py-2 whitespace-nowrap text-sm flex items-center gap-2 justify-start">
-                                                    Logs per page
+                                                <td className="px-3 lg:px-6 py-2 whitespace-nowrap text-sm hidden lg:table-cell"></td>
+                                                <td className="px-3 lg:px-6 py-2 whitespace-nowrap text-sm hidden lg:table-cell"></td>
+                                                <td className="px-3 lg:px-6 py-2 whitespace-nowrap text-sm flex items-center gap-2 justify-start">
+                                                    <p className="hidden lg:block">Logs per page</p>
                                                     <Form.Select defaultValue={limit} onChange={(event) => {
                                                         setPage(1)
                                                         setLimit(parseInt(event.target.value))
