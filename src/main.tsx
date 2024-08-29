@@ -24,6 +24,7 @@ import EmployeesScreen from './screens/employees/EmployeesScreen.tsx'
 import EmployeeDetailsScreen from './screens/employees/EmployeeDetailsScreen.tsx'
 import EmployeeEditScreen from './screens/employees/EmployeeEditScreen.tsx'
 import EmployeeAddScreen from './screens/employees/EmployeeAddScreen.tsx'
+import AccessLogsScreen from './screens/accessLogs/AccessLogsScreen.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -53,9 +54,8 @@ const router = createBrowserRouter(
           <Route path='/dashboard/employees/:id' element={<EmployeeDetailsScreen />} />
           <Route path='/dashboard/employees/edit/:id' element={<EmployeeEditScreen />} />
           <Route path='/dashboard/employees/add' element={<EmployeeAddScreen />} />
-
-
-
+          {/* Access Logs */}
+          <Route path='/dashboard/access-logs' element={<AccessLogsScreen />} />
         </Route>
       </Route>
     </Route>
