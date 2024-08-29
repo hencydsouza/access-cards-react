@@ -50,7 +50,7 @@ const AccessLogsScreen = () => {
         }
 
         const loadData = async () => {
-            setIsLoading(true)
+            // setIsLoading(true)
             await fetchData()
             setIsLoading(false)
         }
@@ -155,7 +155,7 @@ const AccessLogsScreen = () => {
                                                     return (
                                                         <tr>
                                                             <td className="px-6 py-2 whitespace-nowrap text-sm font-medium">{employeeNames.find((item) => item.id == data.employeeId)?.name}</td>
-                                                            <td className="px-6 py-2 whitespace-nowrap text-sm">{companyNames.find((item) => item._id == data.companyId)?.name}</td>
+                                                            <td className="px-6 py-2 whitespace-nowrap text-sm">{companyNames.find((item) => item._id == data.companyId)?.name || "Not Found"}</td>
                                                             <td className="px-6 py-2 whitespace-nowrap text-sm">{buildingNames.find((item) => item.id == data.buildingId)?.name}</td>
                                                             <td className="px-6 py-2 whitespace-nowrap text-sm">{data.timestamp}</td>
                                                         </tr>
