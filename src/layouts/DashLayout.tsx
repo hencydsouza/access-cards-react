@@ -8,7 +8,7 @@ const DashLayout = () => {
             <SidePanel />
             <div className="flex flex-col w-full">
                 <Navbar />
-                <div className={`px-[1.5rem] md:px-[2.5rem] lg:px-[4rem] pt-[1.5rem] overflow-scroll max-h-[calc(100dvh-3.413rem)] md:max-h-[calc(100dvh-4.813rem)] lg:max-h-[calc(100dvh-5.125rem)] no-scrollbar`}>
+                <div className={`px-[1.5rem] md:px-[2.5rem] lg:px-[4rem] py-[1.5rem] overflow-scroll max-h-[calc(100dvh-3.413rem)] md:max-h-[calc(100dvh-4.813rem)] lg:max-h-[calc(100dvh-5.125rem)] no-scrollbar`}>
                     <Outlet />
                 </div>
             </div>
