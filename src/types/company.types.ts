@@ -15,3 +15,11 @@ export interface ICompany {
         _id: string
     }[]
 }
+
+export interface ICompanyCreate {
+    name: string,
+    buildingId: string,
+    ownedBuildings?: {
+        buildingId: string
+    }[]
+}
