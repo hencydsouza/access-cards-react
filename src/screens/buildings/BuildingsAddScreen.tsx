@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Form } from "react-bootstrap"
+import { Button, Form, Spinner } from "react-bootstrap"
 import Breadcrumb from "../../components/Breadcrumb"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import { useEffect, useState } from "react"
@@ -10,10 +9,15 @@ import { ICompanyNames } from "../../types/form.types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addBuilding } from "../../controllers/buildingsController"
 import { updateCompanyById } from "../../controllers/companyController"
-// import { updateCompanyOwnedBuildings } from "../../controllers/companyController"
+import { SubmitHandler, useForm } from 'react-hook-form'
+
+type FormFields = {
+    name: string,
+    address: string,
+    company: string
+}
 
 const BuildingsAddScreen = () => {
-    // const auth = useAuth()
     const navigate = useNavigate()
     const [companyNames, setCompanyNames] = useState<ICompanyNames[]>([{
         name: "name",
@@ -24,10 +28,10 @@ const BuildingsAddScreen = () => {
     }])
     const [isLoading, setIsLoading] = useState(true)
 
-    const [input, setInput] = useState({
-        name: "",
-        address: "",
-        company: "none"
+    const { register, handleSubmit, formState: { isSubmitting }, getValues } = useForm<FormFields>({
+        defaultValues: {
+            company: "none"
+        }
     })
 
     const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
@@ -44,7 +48,7 @@ const BuildingsAddScreen = () => {
 
     const { mutateAsync: mutateCompany } = useMutation({
         mutationFn: (data: string) => {
-            return updateCompanyById(input.company, { ownedBuildings: [{ "buildingId": data }] })
+            return updateCompanyById(getValues("company"), { ownedBuildings: [{ "buildingId": data }] })
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["companies"] })
@@ -58,7 +62,7 @@ const BuildingsAddScreen = () => {
         mutationFn: addBuilding,
         onSuccess: async (newBuilding) => {
             console.log(newBuilding)
-            if (input.company !== "none") {
+            if (getValues("company") !== "none") {
                 await mutateCompany(newBuilding.data.id)
             }
             queryClient.invalidateQueries({ queryKey: ["buildings"] })
@@ -70,46 +74,10 @@ const BuildingsAddScreen = () => {
         }
     })
 
-    const handleSubmitEvent = async (e: any) => {
-        e.preventDefault();
-
-        if (input.name.length > 0 && input.company.length) {
-            await mutateBuilding({ name: input.name, address: input.address })
+    const onSubmit: SubmitHandler<FormFields> = async (data) => {
+        if (data.name.length > 0 && data.company.length) {
+            await mutateBuilding({ name: data.name, address: data.address })
         }
-
-        // if (buildingStatus === "success") {
-        //     // if (input.company !== "none") {
-        //     //     mutateCompany(mutateBuilding)
-        //     // }
-        //     console.log(mutateBuilding)
-
-
-        //     toast.success("Building created successfully", { theme: "colored", position: "bottom-right" })
-        //     navigate("/dashboard/buildings")
-        // }
-        // try {
-        //     if (input.name.length > 0 && input.company.length) {
-        //         const result = await useApiClient._postWithToken('/building', { name: input.name, address: input.address }, auth.accessToken)
-        //         console.log(result.data)
-        //         if (input.company !== "none") {
-        //             const resultB = await useApiClient._patchWithToken(`/company/${input.company}`, { "ownedBuildings": [{ "buildingId": result.data.id }] }, auth.accessToken)
-        //             console.log(resultB.status)
-        //         }
-        //         navigate(`/dashboard/buildings/${result.data.id}`)
-        //         toast.success("Building created successfully", { theme: "colored", position: "bottom-right" })
-        //     }
-        //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // } catch (error: any) {
-        //     toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
-        // }
-    }
-
-    const handleInput = (e: any) => {
-        const { name, value } = e.target
-        setInput((prev) => ({
-            ...prev,
-            [name]: value
-        }))
     }
 
     return (
@@ -127,15 +95,15 @@ const BuildingsAddScreen = () => {
                 </div>
 
                 <div className="bg-white px-[1rem] md:px-[2rem] py-[2rem] rounded-[1.5rem] border border-[#e8f1fc] mt-8">
-                    <Form className="flex flex-col gap-[1rem] md:gap-[1.5rem]" onSubmit={handleSubmitEvent}>
+                    <Form className="flex flex-col gap-[1rem] md:gap-[1.5rem]" onSubmit={handleSubmit(onSubmit)}>
                         <Form.Group controlId="formBasicEmail">
                             <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Building Name</Form.Label>
-                            <Form.Control onChange={handleInput} required type="text" name="name" placeholder="Enter building name" />
+                            <Form.Control {...register("name", { required: true })} required type="text" name="name" placeholder="Enter building name" />
                         </Form.Group>
 
                         <Form.Group>
                             <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Owned By</Form.Label>
-                            <Form.Select required name="company" onChange={handleInput} defaultValue={input.company} aria-label="Default select example">
+                            <Form.Select required {...register("company")} defaultValue="none" aria-label="Default select example">
                                 <option value="none">none</option>
                                 {
                                     companyNames.map((companyName, index) => {
@@ -147,13 +115,13 @@ const BuildingsAddScreen = () => {
 
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Location</Form.Label>
-                            <Form.Control onChange={handleInput} required type="text" name="address" placeholder="Enter location" className="" />
+                            <Form.Control {...register("address", { required: true })} required type="text" name="address" placeholder="Enter location" className="" />
                         </Form.Group>
 
                         <div className="flex flex-col sm:flex-row gap-2">
-                            <Button type="submit" className="flex  items-center justify-center gap-2">
-                                <i className="fa-solid fa-plus"></i>
-                                Create
+                            <Button disabled={isSubmitting} type="submit" className="flex  items-center justify-center gap-2">
+                                <i className={`fa-solid fa-plus ${isSubmitting ? "hidden" : ""}`}></i>
+                                {isSubmitting ? <Spinner animation="border" size="sm" /> : "Create"}
                             </Button>
                         </div>
                     </Form>
