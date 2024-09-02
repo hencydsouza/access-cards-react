@@ -10,7 +10,7 @@ import { toast } from "react-toastify"
 import { useFetchBuildingById, useFetchCompanyNames } from "../../hooks/useFetchQueries"
 import { IBuildings } from "../../types/buildings.types"
 import { ICompanyNames } from "../../types/form.types"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { updateBuildingById } from "../../controllers/buildingsController"
 import { updateCompanyById } from "../../controllers/companyController"
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -63,14 +63,9 @@ const BuildingsEditScreen = () => {
 
     }, [buildingStatus, companyNamesStatus, buildingData, companyNamesData, reloading, setValue])
 
-    const queryClient = useQueryClient()
-
     const { mutateAsync: mutateCompany } = useMutation({
         mutationFn: (data: { ownedBuildings: [{ buildingId: string, buildingName?: string }] }) => {
             return updateCompanyById(getValues("company") !== 'none' ? getValues("company") : building.company[0]._id, data)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["companies"] })
         },
         onError: () => {
             toast.error("Error updating company", { theme: "colored", position: "bottom-right" })
@@ -85,7 +80,6 @@ const BuildingsEditScreen = () => {
             if (building.company[0] ? building.company[0]._id !== getValues("company") : getValues("company") !== "none") {
                 await mutateCompany(getValues("company") !== 'none' ? { "ownedBuildings": [{ "buildingId": building._id }] } : { "ownedBuildings": [{ "buildingId": building._id, "buildingName": "none" }] })
             }
-            queryClient.invalidateQueries({ queryKey: ["buildings"] })
             toast.success("Update successful", { theme: "colored", position: "bottom-right" })
         },
         onError: () => {
