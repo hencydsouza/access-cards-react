@@ -1,16 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form } from "react-bootstrap"
 import Breadcrumb from "../../components/Breadcrumb"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import { useEffect, useState } from "react"
-import useApiClient from "../../hooks/ApiClient"
-import { useAuth } from "../../hooks/AuthProvider"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router"
+import { useFetchCompanyNames } from "../../hooks/useFetchQueries"
+import { ICompanyNames } from "../../types/form.types"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { addBuilding } from "../../controllers/buildingsController"
+import { updateCompanyById } from "../../controllers/companyController"
+// import { updateCompanyOwnedBuildings } from "../../controllers/companyController"
 
 const BuildingsAddScreen = () => {
-    const auth = useAuth()
+    // const auth = useAuth()
     const navigate = useNavigate()
-    const [companyNames, setCompanyNames] = useState<{ name: string, _id: string, ownedBuildings: { buildingId: string }[] }[]>([{
+    const [companyNames, setCompanyNames] = useState<ICompanyNames[]>([{
         name: "name",
         _id: "_id",
         ownedBuildings: [{
@@ -25,41 +30,80 @@ const BuildingsAddScreen = () => {
         company: "none"
     })
 
+    const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
+
     useEffect(() => {
-        const fetchCompanyNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-                setCompanyNames(response.data)
-                setIsLoading(false)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
+        if (companyNamesStatus === "success") {
+            setCompanyNames(companyNamesData)
+            setIsLoading(false)
         }
 
-        fetchCompanyNames()
-    }, [auth])
+    }, [companyNamesStatus, companyNamesData])
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const queryClient = useQueryClient()
+
+    const { mutateAsync: mutateCompany } = useMutation({
+        mutationFn: (data: string) => {
+            return updateCompanyById(input.company, { ownedBuildings: [{ "buildingId": data }] })
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["companies"] })
+        },
+        onError: () => {
+            toast.error("Error updating company", { theme: "colored", position: "bottom-right" })
+        }
+    })
+
+    const { mutateAsync: mutateBuilding } = useMutation({
+        mutationFn: addBuilding,
+        onSuccess: async (newBuilding) => {
+            console.log(newBuilding)
+            if (input.company !== "none") {
+                await mutateCompany(newBuilding.data.id)
+            }
+            queryClient.invalidateQueries({ queryKey: ["buildings"] })
+            toast.success("Building created successfully", { theme: "colored", position: "bottom-right" })
+            navigate("/dashboard/buildings")
+        },
+        onError: () => {
+            toast.error("Error creating building", { theme: "colored", position: "bottom-right" })
+        }
+    })
+
     const handleSubmitEvent = async (e: any) => {
         e.preventDefault();
-        try {
-            if (input.name.length > 0 && input.company.length) {
-                const result = await useApiClient._postWithToken('/building', { name: input.name, address: input.address }, auth.accessToken)
-                console.log(result.data)
-                if (input.company !== "none") {
-                    const resultB = await useApiClient._patchWithToken(`/company/${input.company}`, { "ownedBuildings": [{ "buildingId": result.data.id }] }, auth.accessToken)
-                    console.log(resultB.status)
-                }
-                navigate(`/dashboard/buildings/${result.data.id}`)
-                toast.success("Building created successfully", { theme: "colored", position: "bottom-right" })
-            }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
+
+        if (input.name.length > 0 && input.company.length) {
+            await mutateBuilding({ name: input.name, address: input.address })
         }
+
+        // if (buildingStatus === "success") {
+        //     // if (input.company !== "none") {
+        //     //     mutateCompany(mutateBuilding)
+        //     // }
+        //     console.log(mutateBuilding)
+
+
+        //     toast.success("Building created successfully", { theme: "colored", position: "bottom-right" })
+        //     navigate("/dashboard/buildings")
+        // }
+        // try {
+        //     if (input.name.length > 0 && input.company.length) {
+        //         const result = await useApiClient._postWithToken('/building', { name: input.name, address: input.address }, auth.accessToken)
+        //         console.log(result.data)
+        //         if (input.company !== "none") {
+        //             const resultB = await useApiClient._patchWithToken(`/company/${input.company}`, { "ownedBuildings": [{ "buildingId": result.data.id }] }, auth.accessToken)
+        //             console.log(resultB.status)
+        //         }
+        //         navigate(`/dashboard/buildings/${result.data.id}`)
+        //         toast.success("Building created successfully", { theme: "colored", position: "bottom-right" })
+        //     }
+        //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // } catch (error: any) {
+        //     toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
+        // }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleInput = (e: any) => {
         const { name, value } = e.target
         setInput((prev) => ({

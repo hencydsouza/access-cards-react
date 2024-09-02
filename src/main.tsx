@@ -29,6 +29,10 @@ import AccessCardsScreen from './screens/accessCards/AccessCardsScreen.tsx'
 import AccessCardsDetailsScreen from './screens/accessCards/AccessCardsDetailsScreen.tsx'
 import AccessCardsEditScreen from './screens/accessCards/AccessCardsEditScreen.tsx'
 import AccessCardsAddScreen from './screens/accessCards/AccessCardsAddScreen.tsx'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+const queryClient = new QueryClient()
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -73,6 +77,9 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   </React.StrictMode>
 )

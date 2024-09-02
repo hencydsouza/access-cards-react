@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form } from "react-bootstrap"
 import Breadcrumb from "../../components/Breadcrumb"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
@@ -6,13 +7,19 @@ import { useLocation, useNavigate, useParams } from "react-router"
 import { useEffect, useState } from "react"
 import useApiClient from "../../hooks/ApiClient"
 import { toast } from "react-toastify"
+import { useFetchBuildingById, useFetchCompanyNames } from "../../hooks/useFetchQueries"
+import { IBuildings } from "../../types/buildings.types"
+import { ICompanyNames } from "../../types/form.types"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { updateBuildingById } from "../../controllers/buildingsController"
+import { updateCompanyById } from "../../controllers/companyController"
 
 const BuildingsEditScreen = () => {
     const auth = useAuth()
     const params = useParams()
     const navigate = useNavigate()
-    const [building, setBuilding] = useState<{ name: string, _id: string, address: string, company: { name: string, _id: string }[] }>(useLocation().state)
-    const [companyNames, setCompanyNames] = useState<{ name: string, _id: string, ownedBuildings: { buildingId: string }[] }[]>([{
+    const [building, setBuilding] = useState<IBuildings>(useLocation().state)
+    const [companyNames, setCompanyNames] = useState<ICompanyNames[]>([{
         name: "name",
         _id: "_id",
         ownedBuildings: [{
@@ -28,70 +35,67 @@ const BuildingsEditScreen = () => {
         company: ""
     })
 
+    const { data: buildingData, status: buildingStatus } = useFetchBuildingById(params.id)
+    const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken(`/building/${params.id}`, auth.accessToken)
-                setBuilding(response.data[0])
-                setInput({
-                    name: response.data[0].name,
-                    address: response.data[0].address,
-                    company: response.data[0].company[0] ? response.data[0].company[0]._id : "none"
-                })
-            } catch (error) {
-                console.error("Error fetching building data:", error)
-            }
+        if (buildingStatus === 'success' && companyNamesStatus === 'success') {
+            setBuilding(buildingData[0])
+            setInput({
+                name: buildingData[0].name,
+                address: buildingData[0].address,
+                company: buildingData[0].company[0] ? buildingData[0].company[0]._id : "none"
+            })
+            setCompanyNames(companyNamesData)
+            setIsLoading(false)
         }
 
-        const fetchCompanyNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-                setCompanyNames(response.data)
-            } catch (error) {
-                console.error("Error fetching company names:", error)
-            }
+        if (reloading) {
+            setReloading(false)
         }
 
-        const loadData = async () => {
-            try {
-                await Promise.all([fetchData(), fetchCompanyNames()])
-            } catch (error) {
-                console.error("Error loading data:", error)
-            } finally {
-                setIsLoading(false)
-                if (reloading) {
-                    setReloading(false)
-                }
-            }
+    }, [buildingStatus, companyNamesStatus, buildingData, companyNamesData, reloading])
+
+    const queryClient = useQueryClient()
+
+    const { mutateAsync: mutateCompany } = useMutation({
+        mutationFn: (data: { ownedBuildings: [{ buildingId: string, buildingName?: string }] }) => {
+            return updateCompanyById(input.company !== 'none' ? input.company : building.company[0]._id, data)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["companies"] })
+        },
+        onError: () => {
+            toast.error("Error updating company", { theme: "colored", position: "bottom-right" })
         }
+    })
 
-        loadData()
-    }, [auth, params.id, reloading, setReloading])
+    const { mutateAsync: mutateBuilding } = useMutation({
+        mutationFn: (data: { name: string, address: string }) => {
+            return updateBuildingById(building._id, data)
+        },
+        onSuccess: async () => {
+            if (building.company[0] ? building.company[0]._id !== input.company : input.company !== "none") {
+                await mutateCompany(input.company !== 'none' ? { "ownedBuildings": [{ "buildingId": building._id }] } : { "ownedBuildings": [{ "buildingId": building._id, "buildingName": "none" }] })
+            }
+            queryClient.invalidateQueries({ queryKey: ["buildings"] })
+            toast.success("Update successful", { theme: "colored", position: "bottom-right" })
+        },
+        onError: () => {
+            toast.error("Error creating building", { theme: "colored", position: "bottom-right" })
+        }
+    })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleSubmitEvent = async (e: any) => {
         e.preventDefault();
         if (input.address !== building.address || input.name !== building.name || (building.company[0] ? building.company[0]._id !== input.company : input.company !== "none")) {
-            try {
-                const result = await useApiClient._patchWithToken(`/building/${building._id}`, { name: input.name, address: input.address }, auth.accessToken)
-                if (building.company[0] ? building.company[0]._id !== input.company : input.company !== "none") {
-                    const resultB = await useApiClient._patchWithToken(input.company !== 'none' ? `/company/${input.company}` : `/company/${building.company[0]._id}`, input.company !== 'none' ? { "ownedBuildings": [{ "buildingId": building._id }] } : { "ownedBuildings": [{ "buildingId": building._id, "buildingName": "none" }] }, auth.accessToken)
-                    console.log(resultB.status)
-                }
-                if (result.status === 200) {
-                    toast.success('Update successful', { theme: "colored", position: "bottom-right" })
-                }
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (error: any) {
-                toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
-            }
+            await mutateBuilding({ name: input.name, address: input.address })
             setReloading(true)
             return
         }
         toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleInput = (e: any) => {
         const { name, value } = e.target
         setInput((prev) => ({
@@ -106,7 +110,7 @@ const BuildingsEditScreen = () => {
             console.log(result.status)
             toast.success('Building deleted successfully', { theme: "colored", position: "bottom-right" })
             navigate("/dashboard/buildings")
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         } catch (error: any) {
             toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
         }

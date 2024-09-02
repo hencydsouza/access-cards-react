@@ -8,6 +8,7 @@ const apiClient = axios.create({
         "Content-Type": "application/json"
     }
 })
+apiClient.defaults.withCredentials = true
 
 // custom requests
 const _get = (url: string) => {
@@ -34,6 +35,10 @@ const _postWithToken = (url: string, data = {}, accessToken: string) => {
     })
 }
 
+const _patch = (url: string, data = {}) => {
+    return apiClient.patch(url, data)
+}
+
 const _patchWithToken = (url: string, data = {}, accessToken: string) => {
     return apiClient.patch(url, data, {
         headers: {
@@ -56,6 +61,7 @@ const useApiClient = {
     _post,
     _postWithToken,
     _patchWithToken,
+    _patch,
     _deleteWithToken
 }
 

@@ -7,13 +7,14 @@ import Breadcrumb from "../components/Breadcrumb"
 import { useEffect, useState } from "react"
 import { useAuth } from "../hooks/AuthProvider"
 import { LinkContainer } from "react-router-bootstrap"
-import useApiClient from "../hooks/ApiClient"
+import { useFetchDashboard } from "../hooks/useFetchQueries"
+import { IDashboard } from "../types/dashboard.types"
 
 const DashboardScreen = () => {
     const auth = useAuth()
-
     const [isLoading, setIsLoading] = useState(true)
-    const [data, setData] = useState({
+
+    const [dashData, setDashData] = useState<IDashboard>({
         buildings: 0,
         companies: 0,
         access_card: {
@@ -28,35 +29,61 @@ const DashboardScreen = () => {
         ]
     })
 
+    const { data, status } = useFetchDashboard()
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/dashboard', auth.accessToken)
-                response.data.access_logs = response.data.access_logs.reverse()
+        if (status === "success") {
+            data.access_logs = data.access_logs.reverse()
+            const today = new Date();
+            data.access_logs = data.access_logs.map((log: { _id: string, count: number }) => {
+                const logDate = new Date(log._id);
+                const diffDays = Math.floor((today.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24));
+                if (diffDays === 0) {
+                    log._id = "Today";
+                } else if (diffDays === 1) {
+                    log._id = "1d";
+                } else {
+                    log._id = `${diffDays}d`;
+                }
+                return log;
+            });
 
-                const today = new Date();
-                response.data.access_logs = response.data.access_logs.map((log: { _id: string, count: number }) => {
-                    const logDate = new Date(log._id);
-                    const diffDays = Math.floor((today.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24));
-                    if (diffDays === 0) {
-                        log._id = "Today";
-                    } else if (diffDays === 1) {
-                        log._id = "1d";
-                    } else {
-                        log._id = `${diffDays}d`;
-                    }
-                    return log;
-                });
-
-                setData(response.data)
-                setIsLoading(false)
-            } catch (err) {
-                console.log(err)
-            }
+            setDashData(data)
+            setIsLoading(false)
         }
+    }, [status, data])
 
-        fetchData()
-    }, [auth])
+
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await useApiClient._getWithToken('/dashboard', auth.accessToken)
+    //             response.data.access_logs = response.data.access_logs.reverse()
+
+    //             const today = new Date();
+    //             response.data.access_logs = response.data.access_logs.map((log: { _id: string, count: number }) => {
+    //                 const logDate = new Date(log._id);
+    //                 const diffDays = Math.floor((today.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24));
+    //                 if (diffDays === 0) {
+    //                     log._id = "Today";
+    //                 } else if (diffDays === 1) {
+    //                     log._id = "1d";
+    //                 } else {
+    //                     log._id = `${diffDays}d`;
+    //                 }
+    //                 return log;
+    //             });
+
+    //             setDashData(response.data)
+    //             setIsLoading(false)
+    //         } catch (err) {
+    //             console.log(err)
+    //         }
+    //     }
+
+    //     fetchData()
+    // }, [auth])
 
     return (
         !isLoading ? (<div >
@@ -74,7 +101,7 @@ const DashboardScreen = () => {
                             {eye}
                         </LinkContainer>
                     </div>
-                    <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{data.buildings}</p>
+                    <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{dashData.buildings}</p>
                 </DashboardCard>
 
                 <DashboardCard>
@@ -84,7 +111,7 @@ const DashboardScreen = () => {
                             {eye}
                         </LinkContainer>
                     </div>
-                    <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{data.companies}</p>
+                    <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{dashData.companies}</p>
                 </DashboardCard>
 
                 <div className="lg:col-span-2 xl:col-span-1">
@@ -95,8 +122,8 @@ const DashboardScreen = () => {
                                 {eye}
                             </LinkContainer>
                         </div>
-                        <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{data.access_card.total_count}</p>
-                        {(data.access_card.inactive_count ? <p className="text-[#D7373F] m-0"><span>{data.access_card.inactive_count}</span> Inactive</p> : "")}
+                        <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{dashData.access_card.total_count}</p>
+                        {(dashData.access_card.inactive_count ? <p className="text-[#D7373F] m-0"><span>{dashData.access_card.inactive_count}</span> Inactive</p> : "")}
                     </DashboardCard>
                 </div>
             </div>
@@ -108,10 +135,10 @@ const DashboardScreen = () => {
                         <div className="text-[#B3B3B3] flex justify-between">
                             <p className="text-[0.8rem] sm:text-[1rem]">Today</p>
                         </div>
-                        <p className="font-bold text-[#4B4B4B] text-[1.5rem]">{data.access_logs[data.access_logs.length - 1]._id === "Today" ? data.access_logs[data.access_logs.length - 1].count : 0}</p>
+                        <p className="font-bold text-[#4B4B4B] text-[1.5rem]">{dashData.access_logs[dashData.access_logs.length - 1]._id === "Today" ? dashData.access_logs[dashData.access_logs.length - 1].count : 0}</p>
                         <div className="max-w-[40rem] h-[200px] text-[0.8rem] md:text-inherit md:h-[300px] mt-[0.625rem]">
                             <ResponsiveContainer width={"100%"} height={"100%"}>
-                                <BarChart data={data.access_logs}>
+                                <BarChart data={dashData.access_logs}>
                                     <Tooltip />
                                     <XAxis dataKey="_id" />
                                     <Bar dataKey="count" fill="#1472e6" label={{ position: 'top' }} />

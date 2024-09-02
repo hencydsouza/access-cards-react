@@ -4,29 +4,24 @@ import Breadcrumb from "../../components/Breadcrumb"
 import { Button } from "react-bootstrap"
 import { useLocation, useParams } from "react-router"
 import { LinkContainer } from "react-router-bootstrap"
-import useApiClient from "../../hooks/ApiClient"
-import { useAuth } from "../../hooks/AuthProvider"
+import { useFetchBuildingById } from "../../hooks/useFetchQueries"
+import { IBuildings } from "../../types/buildings.types"
 
 const BuildingsDetailsScreen = () => {
-    const auth = useAuth()
     const params = useParams()
     const location = useLocation()
-    const [building, setBuilding] = useState<{ name: string, _id: string, address: string, company: { name: string }[] }>(location.state)
+    const [building, setBuilding] = useState<IBuildings>(location.state)
     const [isLoading, setIsLoading] = useState(true)
 
+    const { data, status } = useFetchBuildingById(params.id)
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken(`/building/${params.id}`, auth.accessToken)
-                setBuilding(response.data[0])
-            } catch (error) {
-                console.error("Error fetching building data:", error)
-            } finally {
-                setIsLoading(false)
-            }
+        if (status === 'success') {
+            console.log(data)
+            setBuilding(data[0])
+            setIsLoading(false)
         }
-        fetchData()
-    }, [auth, params.id])
+    }, [status, data])
 
     return (
         !isLoading ? (
