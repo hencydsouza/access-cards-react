@@ -6,6 +6,8 @@ import { IDashboard } from "../types/dashboard.types";
 import { QueryObserverResult, UseBaseMutationResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ICompanyNames } from "../types/form.types";
 import { AxiosResponse } from "axios";
+import { ICompany } from "../types/company.types";
+import { fetchCompanies, fetchCompanyById } from "../controllers/companyController";
 
 // Dashboard
 const useFetchDashboard = (): QueryObserverResult<IDashboard> => {
@@ -49,6 +51,27 @@ const useUpdateBuildingById = (id: string | undefined): UseBaseMutationResult<Ax
     })
 }
 
+// Companies
+const useFetchCompanies = (): QueryObserverResult<ICompany[]> => {
+    return useQuery<ICompany[]>({
+        queryFn: async () => {
+            const { data } = await fetchCompanies()
+            return data.results
+        },
+        queryKey: ['companies']
+    })
+}
+
+const useFetchCompanyById = (id: string | undefined): QueryObserverResult<ICompany> => {
+    return useQuery<ICompany>({
+        queryFn: async () => {
+            const { data } = await fetchCompanyById(id)
+            return data
+        },
+        queryKey: ['companies', id]
+    })
+}
+
 // Form Data
 const useFetchCompanyNames = (): QueryObserverResult<ICompanyNames[]> => {
     return useQuery<ICompanyNames[]>({
@@ -64,6 +87,8 @@ export {
     useFetchDashboard,
     useFetchBuildings,
     useFetchBuildingById,
+    useFetchCompanies,
+    useFetchCompanyById,
     useFetchCompanyNames,
     useUpdateBuildingById
 }

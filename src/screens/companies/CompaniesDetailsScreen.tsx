@@ -1,32 +1,26 @@
 import { useLocation, useParams } from "react-router"
-import { useAuth } from "../../hooks/AuthProvider"
 import { useEffect, useState } from "react"
-import useApiClient from "../../hooks/ApiClient"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button } from "react-bootstrap"
+import { useFetchCompanyById } from "../../hooks/useFetchQueries"
+import { ICompany } from "../../types/company.types"
 
 const CompaniesDetailsScreen = () => {
-    const auth = useAuth()
     const params = useParams()
     const location = useLocation()
-    const [company, setCompany] = useState<{ name: string, id: string, buildings: { buildingName: string }, ownedBuildings: { buildingName: string; }[] }>(location.state)
+    const [company, setCompany] = useState<ICompany>(location.state)
     const [isLoading, setIsLoading] = useState(true)
 
+    const { data, status } = useFetchCompanyById(params.id)
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken(`/company/${params.id}`, auth.accessToken)
-                setCompany(response.data)
-            } catch (error) {
-                console.error('Error fetching company data:', error)
-            } finally {
-                setIsLoading(false)
-            }
+        if (status === 'success') {
+            setCompany(data)
+            setIsLoading(false)
         }
-        fetchData()
-    }, [auth, params.id])
+    }, [params.id, data, status])
 
     return (
         !isLoading ? (
