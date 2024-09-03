@@ -29,7 +29,7 @@ const CompanyCard = (props: { state: { name: string, id: string, buildings: { bu
                         </p>
                     </div>
                     <LinkContainer to={`/dashboard/companies/edit/${state.id}`} state={state}>
-                        <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto">
+                        <Button variant="outline-primary" className="w-max text-sm border-none bg-[#e8f1fd] flex items-center gap-2 mt-auto">
                             <i className="fa-regular fa-pen-to-square"></i>
                             Edit
                         </Button>

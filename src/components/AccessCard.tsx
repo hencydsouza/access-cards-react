@@ -27,7 +27,7 @@ const AccessCard = (props: { state: { cardHolder: { buildingId: string, companyI
                         <p className="lg:text-[1rem] font-medium text-[#4B4B4B] md:text-[0.95rem] text-[0.75rem]">{buildingNames.find((item) => item.id === state.cardHolder.buildingId)?.name}</p>
                     </div>
                     <LinkContainer to={`/dashboard/access-cards/edit/${state.id}`} state={state}>
-                        <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto">
+                        <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto text-sm border-none bg-[#e8f1fd]">
                             <i className="fa-regular fa-pen-to-square"></i>
                             Edit
                         </Button>

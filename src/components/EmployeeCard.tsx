@@ -27,7 +27,7 @@ const EmployeeCard = (props: { state: { name: string, id: string, email: string,
                         <p className="lg:text-[1rem] font-medium text-[#4B4B4B] md:text-[0.95rem] text-[0.75rem]">{state.description}</p>
                     </div> */}
                     <LinkContainer to={`/dashboard/employees/edit/${state.id}`} state={state}>
-                        <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto">
+                        <Button variant="outline-primary" className="w-max text-sm border-none bg-[#e8f1fd] flex items-center gap-2 mt-auto">
                             <i className="fa-regular fa-pen-to-square"></i>
                             Edit
                         </Button>

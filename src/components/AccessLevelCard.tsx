@@ -19,7 +19,7 @@ const AccessLevelCard = (props: { state: { name: string, type: string, id: strin
                         <p className="lg:text-[1rem] font-medium text-[#4B4B4B] md:text-[0.95rem] text-[0.75rem]">{state.description}</p>
                     </div>
                     <LinkContainer to={`/dashboard/access-levels/edit/${state.id}`} state={state}>
-                        <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto">
+                        <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto text-sm border-none bg-[#e8f1fd]">
                             <i className="fa-regular fa-pen-to-square"></i>
                             Edit
                         </Button>

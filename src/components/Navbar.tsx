@@ -1,3 +1,4 @@
+import { getResource } from "../helpers/checkResource"
 import { useAuth } from "../hooks/AuthProvider"
 
 const Navbar = () => {
@@ -22,8 +23,8 @@ const Navbar = () => {
                 </div>) : ""}
 
                 <div className="m-0 text-right sm:text-left">
-                    <p className="m-0 text-[0.8rem] sm:text-[1rem] font-semibold">{auth.user?.name}</p>
-                    <p className="m-0 text-[0.675rem] sm:text-[0.875rem] text-[#B3B3B3] font-light">{auth.user?.email}</p>
+                    <p className="m-0 text-[0.8rem] sm:text-[1rem] font-semibold">{auth.user?.email}</p>
+                    <p className="m-0 text-[0.675rem] sm:text-[0.875rem] text-[#B3B3B3] font-light">{getResource()} admin</p>
                 </div>
             </div>
         </nav>

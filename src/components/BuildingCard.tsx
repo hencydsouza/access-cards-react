@@ -20,7 +20,7 @@ const BuildingCard = (props: { state: { name: string; _id: string; address: stri
                         <p className="lg:text-[1rem] font-medium text-[#4B4B4B] md:text-[0.95rem] text-[0.75rem]">{state.address}</p>
                     </div>
                     <LinkContainer to={`/dashboard/buildings/edit/${state._id}`} state={state}>
-                        <Button variant="outline-primary" className="w-max flex items-center gap-2 mt-auto">
+                        <Button variant="outline-primary" className="w-max text-sm flex items-center gap-2 mt-auto border-none bg-[#e8f1fd]">
                             <i className="fa-regular fa-pen-to-square"></i>
                             Edit
                         </Button>

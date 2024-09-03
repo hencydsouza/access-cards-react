@@ -1,7 +1,8 @@
 import SidePanelElement from "./SidePanelElement"
-import { home, building, company, employee, accessCard, accessLog, accessLevel, settings, logout } from '../assets/svg'
+import { home, building, company, employee, accessCard, accessLog, accessLevel, logout } from '../assets/svg'
 import logo from '../assets/logo.svg'
 import { useAuth } from "../hooks/AuthProvider"
+import { getResource } from "../helpers/checkResource"
 
 const SidePanel = () => {
     const auth = useAuth()
@@ -16,8 +17,8 @@ const SidePanel = () => {
 
                 <div className="self-start px-[0.8rem] sm:px-[2rem] lg:pl-[3rem] sm:m-0 mb-auto relative">
                     <SidePanelElement link="/dashboard" svg={home} text="Dashboard" />
-                    <SidePanelElement link="/dashboard/buildings" svg={building} text="Buildings" />
-                    <SidePanelElement link="/dashboard/companies" svg={company} text="Companies" />
+                    {['product', 'building'].some(item => item === getResource()) && <SidePanelElement link="/dashboard/buildings" svg={building} text="Buildings" />}
+                    <SidePanelElement link="/dashboard/companies" svg={company} text={getResource() === 'company' ? 'Company' : `Companies`} />
                     <SidePanelElement link="/dashboard/employees" svg={employee} text="Employees" />
                     <SidePanelElement link="/dashboard/access-cards" svg={accessCard} text="Access Cards" />
                     <SidePanelElement link="/dashboard/access-logs" svg={accessLog} text="Access Logs" />
@@ -25,7 +26,7 @@ const SidePanel = () => {
                 </div>
 
                 <div className="self-start px-[0.8rem] sm:px-[2rem] lg:pl-[3rem]">
-                    <SidePanelElement link="/dashboard/settings" svg={settings} text="Settings" />
+                    {/* <SidePanelElement link="/dashboard/settings" svg={settings} text="Settings" /> */}
                     <SidePanelElement link="/login" onClick={() => { auth.logoutAction() }} svg={logout} text="Logout" />
                 </div>
 
