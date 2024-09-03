@@ -6,19 +6,31 @@ import { useEffect, useState } from "react"
 import { LinkContainer } from "react-router-bootstrap"
 import { useFetchBuildings } from "../../hooks/useFetchQueries"
 import { IBuildings } from "../../types/buildings.types"
+import { checkResource, getResource } from "../../helpers/checkResource"
+import { useNavigate } from "react-router"
+import { useAuth } from "../../hooks/AuthProvider"
 
-const BuildingsScreen = () => {
+const BuildingsScreen = (props: { resource: string[] }) => {
+    const auth = useAuth()
+    const navigate = useNavigate()
+
     const [buildings, setBuildings] = useState<IBuildings[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     const { data, status } = useFetchBuildings()
 
     useEffect(() => {
+        if (getResource() === 'building') {
+            navigate(`/dashboard/buildings/${auth.user?.company.buildingId}`)
+        } else if (!checkResource(props.resource)) {
+            navigate('/dashboard')
+        }
+
         if (status === 'success') {
             setBuildings(data)
             setIsLoading(false)
         }
-    }, [status, data])
+    }, [status, data, auth, navigate, props.resource])
 
     return (
         !isLoading ? (

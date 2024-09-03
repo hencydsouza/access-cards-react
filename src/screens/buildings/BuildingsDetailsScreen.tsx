@@ -2,12 +2,18 @@ import { useEffect, useState } from "react"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { Button } from "react-bootstrap"
-import { useLocation, useParams } from "react-router"
+import { useLocation, useNavigate, useParams } from "react-router"
 import { LinkContainer } from "react-router-bootstrap"
 import { useFetchBuildingById } from "../../hooks/useFetchQueries"
 import { IBuildings } from "../../types/buildings.types"
+import { checkResource } from "../../helpers/checkResource"
 
-const BuildingsDetailsScreen = () => {
+const BuildingsDetailsScreen = (props: { resource: string[] }) => {
+    const navigate = useNavigate()
+    if (!checkResource(props.resource)) {
+        navigate('/dashboard')
+    }
+
     const params = useParams()
     const location = useLocation()
     const [building, setBuilding] = useState<IBuildings>(location.state)

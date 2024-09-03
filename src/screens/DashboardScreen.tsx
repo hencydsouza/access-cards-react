@@ -9,6 +9,7 @@ import { useAuth } from "../hooks/AuthProvider"
 import { LinkContainer } from "react-router-bootstrap"
 import { useFetchDashboard } from "../hooks/useFetchQueries"
 import { IDashboard } from "../types/dashboard.types"
+import { getResource } from "../helpers/checkResource"
 
 const DashboardScreen = () => {
     const auth = useAuth()
@@ -94,25 +95,29 @@ const DashboardScreen = () => {
                 <p className="text-[0.7rem] sm:text-[1rem] font-medium text-[#B3B3B3] m-0">Welcome back, {auth.user?.name}</p>
             </div>
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                <DashboardCard>
-                    <div className="text-[#B3B3B3] flex justify-between">
-                        <p className="text-[0.8rem] sm:text-[1rem]">Total Buildings</p>
-                        <LinkContainer to="/dashboard/buildings" className="cursor-pointer h-[18px] sm:h-[24px]">
-                            {eye}
-                        </LinkContainer>
-                    </div>
-                    <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{dashData.buildings}</p>
-                </DashboardCard>
+                <div className={['product'].some(item => item === getResource()) ? "" : "hidden"}>
+                    <DashboardCard>
+                        <div className="text-[#B3B3B3] flex justify-between">
+                            <p className="text-[0.8rem] sm:text-[1rem]">Total Buildings</p>
+                            <LinkContainer to="/dashboard/buildings" className="cursor-pointer h-[18px] sm:h-[24px]">
+                                {eye}
+                            </LinkContainer>
+                        </div>
+                        <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{dashData.buildings}</p>
+                    </DashboardCard>
+                </div>
 
-                <DashboardCard>
-                    <div className="text-[#B3B3B3] flex justify-between">
-                        <p className="text-[0.8rem] sm:text-[1rem]">Total Companies</p>
-                        <LinkContainer to="/dashboard/companies" className="cursor-pointer h-[18px] sm:h-[24px]">
-                            {eye}
-                        </LinkContainer>
-                    </div>
-                    <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{dashData.companies}</p>
-                </DashboardCard>
+                <div className={['product', 'building'].some(item => item === getResource()) ? "" : "hidden"}>
+                    <DashboardCard>
+                        <div className="text-[#B3B3B3] flex justify-between">
+                            <p className="text-[0.8rem] sm:text-[1rem]">Total Companies</p>
+                            <LinkContainer to="/dashboard/companies" className="cursor-pointer h-[18px] sm:h-[24px]">
+                                {eye}
+                            </LinkContainer>
+                        </div>
+                        <p className="mt-[1rem] md:text-[4.313rem] font-bold text-[#4B4B4B] text-[2.5rem]">{dashData.companies}</p>
+                    </DashboardCard>
+                </div>
 
                 <div className="lg:col-span-2 xl:col-span-1">
                     <DashboardCard>

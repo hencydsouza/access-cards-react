@@ -7,20 +7,32 @@ import { LinkContainer } from "react-router-bootstrap"
 import CompanyCard from "../../components/CompanyCard"
 import { useFetchCompanies } from "../../hooks/useFetchQueries"
 import { ICompany } from "../../types/company.types"
+import { useNavigate } from "react-router"
+import { checkResource, getResource } from "../../helpers/checkResource"
+import { useAuth } from "../../hooks/AuthProvider"
 
-const CompaniesScreen = () => {
+const CompaniesScreen = (props: { resource: string[] }) => {
+    const auth = useAuth()
+    const navigate = useNavigate()
+
     const [companies, setCompanies] = useState<ICompany[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     const { data, status } = useFetchCompanies()
 
     useEffect(() => {
+        if (getResource() === 'company') {
+            navigate(`/dashboard/companies/${auth.user?.company.companyId}`)
+        } else if (!checkResource(props.resource)) {
+            navigate('/dashboard')
+        }
+        
         if (status === 'success') {
             setCompanies(data)
             setIsLoading(false)
             // console.log(data)
         }
-    }, [status, data])
+    }, [status, data, auth, navigate, props.resource])
 
     return (
         !isLoading ? (

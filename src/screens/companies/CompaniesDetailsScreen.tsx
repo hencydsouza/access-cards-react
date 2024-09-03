@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router"
+import { useLocation, useNavigate, useParams } from "react-router"
 import { useEffect, useState } from "react"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
@@ -6,8 +6,10 @@ import { LinkContainer } from "react-router-bootstrap"
 import { Button } from "react-bootstrap"
 import { useFetchCompanyById } from "../../hooks/useFetchQueries"
 import { ICompany } from "../../types/company.types"
+import { checkResource } from "../../helpers/checkResource"
 
-const CompaniesDetailsScreen = () => {
+const CompaniesDetailsScreen = (props: { resource: string[] }) => {
+    const navigate = useNavigate()
     const params = useParams()
     const location = useLocation()
     const [company, setCompany] = useState<ICompany>(location.state)
@@ -16,11 +18,15 @@ const CompaniesDetailsScreen = () => {
     const { data, status } = useFetchCompanyById(params.id)
 
     useEffect(() => {
+        if (!checkResource(props.resource)) {
+            navigate('/dashboard')
+        }
+
         if (status === 'success') {
             setCompany(data)
             setIsLoading(false)
         }
-    }, [params.id, data, status])
+    }, [params.id, data, status, navigate, props.resource])
 
     return (
         !isLoading ? (

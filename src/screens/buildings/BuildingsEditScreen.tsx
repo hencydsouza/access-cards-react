@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query"
 import { updateBuildingById } from "../../controllers/buildingsController"
 import { updateCompanyById } from "../../controllers/companyController"
 import { SubmitHandler, useForm } from "react-hook-form"
+import { checkResource } from "../../helpers/checkResource"
 
 type FormFields = {
     name: string,
@@ -21,10 +22,10 @@ type FormFields = {
     company: string
 }
 
-const BuildingsEditScreen = () => {
+const BuildingsEditScreen = (props: { resource: string[] }) => {
+    const navigate = useNavigate()
     const auth = useAuth()
     const params = useParams()
-    const navigate = useNavigate()
     const [building, setBuilding] = useState<IBuildings>(useLocation().state)
     const [companyNames, setCompanyNames] = useState<ICompanyNames[]>([{
         name: "name",
@@ -48,6 +49,10 @@ const BuildingsEditScreen = () => {
     const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
 
     useEffect(() => {
+        if (!checkResource(props.resource)) {
+            navigate('/dashboard')
+        }
+
         if (buildingStatus === 'success' && companyNamesStatus === 'success') {
             setBuilding(buildingData[0])
             setValue("company", buildingData[0].company[0] ? buildingData[0].company[0]._id : "none")
@@ -61,7 +66,7 @@ const BuildingsEditScreen = () => {
             setReloading(false)
         }
 
-    }, [buildingStatus, companyNamesStatus, buildingData, companyNamesData, reloading, setValue])
+    }, [buildingStatus, companyNamesStatus, buildingData, companyNamesData, reloading, setValue, auth, props.resource, navigate])
 
     const { mutateAsync: mutateCompany } = useMutation({
         mutationFn: (data: { ownedBuildings: [{ buildingId: string, buildingName?: string }] }) => {

@@ -11,6 +11,7 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import { addCompany } from "../../controllers/companyController"
 import { ICompanyCreate } from "../../types/company.types"
+import { checkResource } from "../../helpers/checkResource"
 
 type FormFields = {
     name: string,
@@ -18,7 +19,7 @@ type FormFields = {
     ownedBuildings: { buildingId: string }[] | []
 }
 
-const CompaniesAddScreen = () => {
+const CompaniesAddScreen = (props: { resource: string[] }) => {
     const navigate = useNavigate()
     const [buildingNames, setBuildingNames] = useState<IBuildingNames[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -33,12 +34,16 @@ const CompaniesAddScreen = () => {
     const { data, status: buildingStatus } = useFetchBuildingNames()
 
     useEffect(() => {
+        if (!checkResource(props.resource)) {
+            navigate('/dashboard')
+        }
+
         if (buildingStatus === "success") {
             setBuildingNames(data)
             setIsLoading(false)
         }
         setReload(false)
-    }, [data, buildingStatus, reload])
+    }, [data, buildingStatus, reload, props.resource, navigate])
 
     const { mutateAsync: mutateCompany } = useMutation({
         mutationFn: addCompany,

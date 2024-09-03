@@ -4,7 +4,7 @@ import useApiClient from "./ApiClient";
 import { toast } from "react-toastify";
 
 interface IAuth {
-    user: { name: string, email: string } | null,
+    user: { name: string, email: string, company: { companyId: string, buildingId: string } } | null,
     loginAction: (data: { email: string, password: string, resource: string }) => void,
     logoutAction: () => void,
     refresh: (token: string) => void,
@@ -55,6 +55,7 @@ export const AuthProvider = (props: { children: any }) => {
                 setAccessToken(response.data.tokens.access.token)
                 setRefreshToken(response.data.tokens.refresh.token)
                 localStorage.setItem("refreshToken", response.data.tokens.refresh.token)
+                localStorage.setItem("resource", data.resource)
                 navigate('/dashboard')
                 toast.success("Login successful", { theme: "colored", position: "bottom-right" })
                 return
@@ -72,6 +73,7 @@ export const AuthProvider = (props: { children: any }) => {
         setAccessToken("")
         setRefreshToken("")
         localStorage.removeItem("refreshToken")
+        localStorage.removeItem("resource")
         await useApiClient._post('/auth/logout', {
             refreshToken
         })

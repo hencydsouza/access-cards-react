@@ -43,15 +43,15 @@ const router = createBrowserRouter(
         <Route path='/dashboard' element={<DashLayout />}>
           <Route path='/dashboard' index={true} element={<DashboardScreen />} />
           {/* building routes */}
-          <Route path='/dashboard/buildings' element={<BuildingsScreen />} />
-          <Route path='/dashboard/buildings/:id' element={<BuildingsDetailsScreen />} />
-          <Route path='/dashboard/buildings/edit/:id' element={<BuildingsEditScreen />} />
-          <Route path='/dashboard/buildings/add' element={<BuildingsAddScreen />} />
+          <Route path='/dashboard/buildings' element={<BuildingsScreen resource={['product']} />} />
+          <Route path='/dashboard/buildings/:id' element={<BuildingsDetailsScreen resource={['product', 'building']} />} />
+          <Route path='/dashboard/buildings/edit/:id' element={<BuildingsEditScreen resource={['product']} />} />
+          <Route path='/dashboard/buildings/add' element={<BuildingsAddScreen resource={['product']} />} />
           {/* company routes */}
-          <Route path='/dashboard/companies' element={<CompaniesScreen />} />
-          <Route path='/dashboard/companies/:id' element={<CompaniesDetailsScreen />} />
-          <Route path='/dashboard/companies/edit/:id' element={<CompaniesEditScreen />} />
-          <Route path='/dashboard/companies/add' element={<CompaniesAddScreen />} />
+          <Route path='/dashboard/companies' element={<CompaniesScreen resource={['product', 'building']} />} />
+          <Route path='/dashboard/companies/:id' element={<CompaniesDetailsScreen resource={['product', 'building', 'company']} />} />
+          <Route path='/dashboard/companies/edit/:id' element={<CompaniesEditScreen resource={['product', 'company']} />} />
+          <Route path='/dashboard/companies/add' element={<CompaniesAddScreen resource={['product']} />} />
           {/* access levels */}
           <Route path='/dashboard/access-levels' element={<AccessLevelsScreen />} />
           <Route path='/dashboard/access-levels/:id' element={<AccessLevelsDetailsScreen />} />

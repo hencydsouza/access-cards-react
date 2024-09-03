@@ -7,11 +7,13 @@ import { toast } from "react-toastify"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { Button, Form } from "react-bootstrap"
+import { checkResource } from "../../helpers/checkResource"
 
-const CompaniesEditScreen = () => {
+const CompaniesEditScreen = (props: { resource: string[] }) => {
+    const navigate = useNavigate()
+
     const auth = useAuth()
     const params = useParams()
-    const navigate = useNavigate()
     const [company, setCompany] = useState<{ name: string, id: string, buildings: { buildingName: string, buildingId: string }, ownedBuildings: { buildingName: string; }[] }>(useLocation().state)
     const [buildingNames, setBuildingNames] = useState<{ name: string, id: string }[]>([{
         name: "",
@@ -27,6 +29,10 @@ const CompaniesEditScreen = () => {
     })
 
     useEffect(() => {
+        if (!checkResource(props.resource)) {
+            navigate('/dashboard')
+        }
+        
         const fetchData = async () => {
             try {
                 const response = await useApiClient._getWithToken(`/company/${params.id}`, auth.accessToken)
@@ -59,7 +65,7 @@ const CompaniesEditScreen = () => {
         }
 
         loadData()
-    }, [auth, params.id, reloading, setReloading])
+    }, [auth, params.id, reloading, setReloading, navigate, props.resource])
 
 
     const handleSubmitEvent = async (e: any) => {

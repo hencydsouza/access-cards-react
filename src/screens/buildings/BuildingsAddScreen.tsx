@@ -10,6 +10,7 @@ import { useMutation } from "@tanstack/react-query"
 import { addBuilding } from "../../controllers/buildingsController"
 import { updateCompanyById } from "../../controllers/companyController"
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { checkResource } from "../../helpers/checkResource"
 
 type FormFields = {
     name: string,
@@ -17,8 +18,12 @@ type FormFields = {
     company: string
 }
 
-const BuildingsAddScreen = () => {
+const BuildingsAddScreen = (props: { resource: string[] }) => {
     const navigate = useNavigate()
+    if (!checkResource(props.resource)) {
+        navigate('/dashboard')
+    }
+
     const [companyNames, setCompanyNames] = useState<ICompanyNames[]>([{
         name: "name",
         _id: "_id",
