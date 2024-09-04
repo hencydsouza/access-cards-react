@@ -1,15 +1,17 @@
 import { fetchBuildingById, fetchBuildings, updateBuildingById } from "../controllers/buildingsController";
 import { fetchDashboard } from "../controllers/dashboardController";
-import { fetchAccessLevelNames, fetchBuildingNames, fetchCompanyNames } from "../controllers/formDataController";
+import { fetchAccessLevelNames, fetchBuildingNames, fetchCompanyNames, fetchEmployeeNames } from "../controllers/formDataController";
 import { IBuildings, IBuildingUpdate } from "../types/buildings.types";
 import { IDashboard } from "../types/dashboard.types";
 import { QueryObserverResult, UseBaseMutationResult, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { IAccessLevelNames, IBuildingNames, ICompanyNames } from "../types/form.types";
+import { IAccessLevelNames, IBuildingNames, ICompanyNames, IEmployeeNames } from "../types/form.types";
 import { AxiosResponse } from "axios";
 import { ICompany } from "../types/company.types";
 import { fetchCompanies, fetchCompanyById } from "../controllers/companyController";
 import { IEmployee } from "../types/employees.types";
 import { fetchEmployeeById, fetchEmployees } from "../controllers/employeeController";
+import { IAccessLogs } from "../types/accessLogs.types";
+import { fetchAccessLog } from "../controllers/accessLogsController";
 
 // Dashboard
 const useFetchDashboard = (): QueryObserverResult<IDashboard> => {
@@ -95,6 +97,17 @@ const useFetchEmployeeById = (id: string): QueryObserverResult<IEmployee> => {
     })
 }
 
+// Access Logs
+const useFetchAccessLogs = (page: number, limit: number): QueryObserverResult<IAccessLogs[]> => {
+    return useQuery<IAccessLogs[]>({
+        queryFn: async () => {
+            const { data } = await fetchAccessLog(page, limit)
+            return data
+        },
+        queryKey: ['accessLogs', page, limit]
+    })
+}
+
 // Form Data
 const useFetchCompanyNames = (): QueryObserverResult<ICompanyNames[]> => {
     return useQuery<ICompanyNames[]>({
@@ -126,6 +139,16 @@ const useFetchAccessLevelNames = (): QueryObserverResult<IAccessLevelNames[]> =>
     })
 }
 
+const useFetchEmployeeNames = (): QueryObserverResult<IEmployeeNames[]> => {
+    return useQuery<IEmployeeNames[]>({
+        queryFn: async () => {
+            const { data } = await fetchEmployeeNames()
+            return data
+        },
+        queryKey: ['employeeNames']
+    })
+}
+
 export {
     useFetchDashboard,
     useFetchBuildings,
@@ -137,5 +160,7 @@ export {
     useUpdateBuildingById,
     useFetchEmployees,
     useFetchEmployeeById,
-    useFetchAccessLevelNames
+    useFetchAccessLevelNames,
+    useFetchEmployeeNames,
+    useFetchAccessLogs
 }

@@ -1,97 +1,42 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "../../hooks/AuthProvider"
-import useApiClient from "../../hooks/ApiClient"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { Button, Form } from "react-bootstrap"
+import { useFetchAccessLogs, useFetchBuildingNames, useFetchCompanyNames, useFetchEmployeeNames } from "../../hooks/useFetchQueries"
+import { IBuildingNames, ICompanyNames, IEmployeeNames } from "../../types/form.types"
+import { IAccessLogs } from "../../types/accessLogs.types"
 
 const AccessLogsScreen = () => {
     const auth = useAuth()
-    const [accessLogs, setAccessLogs] = useState<{ accessCardId: string, accessType: string, bucketEndTime: string, bucketStartTime: string, buildingId: string, companyId: string, employeeId: string, eventType: string, timestamp: string, resource: string[], _id: string }[]>([
-        {
-            accessCardId: "accessCardId",
-            accessType: "accessType",
-            bucketEndTime: "bucketEndTime",
-            bucketStartTime: "bucketStartTime",
-            buildingId: "buildingId",
-            companyId: "companyId",
-            employeeId: "employeeId",
-            eventType: "eventType",
-            timestamp: "timestamp",
-            resource: ["resource"],
-            _id: "_id"
-        }
-    ])
-    const [companyNames, setCompanyNames] = useState<{ name: string, _id: string }[]>([{
-        name: "name",
-        _id: "_id"
-    }])
-    const [buildingNames, setBuildingNames] = useState<{ name: string, id: string }[]>([{
-        name: "name",
-        id: "id"
-    }])
-    const [employeeNames, setEmployeeNames] = useState<{ name: string, id: string }[]>([{
-        name: "name",
-        id: "id"
-    }])
+    const [accessLogs, setAccessLogs] = useState<IAccessLogs[]>([])
+    const [companyNames, setCompanyNames] = useState<Partial<ICompanyNames>[]>([])
+    const [buildingNames, setBuildingNames] = useState<IBuildingNames[]>([])
+    const [employeeNames, setEmployeeNames] = useState<IEmployeeNames[]>([])
 
     const [isLoading, setIsLoading] = useState(true)
     const [page, setPage] = useState(1)
     const [limit, setLimit] = useState<number>(10)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken(`/access-log?limit=${limit}&page=${page}`, auth.accessToken)
-                setAccessLogs(response.data)
-            } catch (error) {
-                console.error('Error fetching employees:', error)
-            }
-        }
+    const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
+    const { data: buildingNamesData, status: buildingNamesStatus } = useFetchBuildingNames()
+    const { data: employeeNamesData, status: employeeNamesStatus } = useFetchEmployeeNames()
+    const { data, status } = useFetchAccessLogs(page, limit)
 
-        const loadData = async () => {
-            // setIsLoading(true)
-            await fetchData()
+    useEffect(() => {
+        if (status === 'success') {
+            setAccessLogs(data)
             setIsLoading(false)
         }
-
-        loadData()
-    }, [auth, page, limit])
+    }, [auth, page, limit, status, data])
 
     useEffect(() => {
-        const fetchCompanyNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-                setCompanyNames(response.data)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
+        if (companyNamesStatus === 'success' && buildingNamesStatus === 'success' && employeeNamesStatus === 'success') {
+            setCompanyNames(companyNamesData)
+            setBuildingNames(buildingNamesData)
+            setEmployeeNames(employeeNamesData)
         }
-        const fetchBuildingNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-                console.log(response.data)
-                setBuildingNames(response.data)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
-        }
-        const fetchEmployeeNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/employee/employeeNames', auth.accessToken)
-                console.log(response.data)
-                setEmployeeNames(response.data)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
-        }
-
-        const loadStaticData = async () => {
-            await Promise.all([fetchCompanyNames(), fetchBuildingNames(), fetchEmployeeNames()])
-        }
-
-        loadStaticData()
-    }, [auth])
+    }, [companyNamesData, buildingNamesData, employeeNamesData, companyNamesStatus, buildingNamesStatus, employeeNamesStatus])
 
     return (
         !isLoading ? (
@@ -106,36 +51,6 @@ const AccessLogsScreen = () => {
                 </div>
 
                 <div>
-                    {/* <div className="mt-4">
-                        <p>Filters</p>
-                        <div className="flex flex-col md:flex-row gap-2 md:gap-4">
-                            <Form.Select aria-label="Default select example">
-                                <option>Open this select menu</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </Form.Select>
-                            <Form.Select aria-label="Default select example">
-                                <option>Open this select menu</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </Form.Select>
-                            <Form.Select aria-label="Default select example">
-                                <option>Open this select menu</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </Form.Select>
-                            <Form.Select aria-label="Default select example">
-                                <option>Open this select menu</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </Form.Select>
-                        </div>
-                    </div> */}
-
                     <div className="lg:flex flex-col mt-4">
                         <div className="-m-1.5 overflow-x-auto">
                             <div className="p-1.5 min-w-full inline-block align-middle">
