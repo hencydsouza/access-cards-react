@@ -9,7 +9,7 @@ import { useFetchAccessLevelNames, useFetchBuildingNames, useFetchCompanyNames }
 import { SubmitHandler, useForm } from "react-hook-form"
 import { IEmployeeCreate } from "../../types/employees.types"
 import { addEmployee } from "../../controllers/employeeController"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { IAccessLevelNames, IBuildingNames, ICompanyNames } from "../../types/form.types"
 
 const EmployeeAddScreen = () => {
@@ -47,9 +47,11 @@ const EmployeeAddScreen = () => {
         }
     })
 
+    const queryClient = useQueryClient()
     const { mutateAsync: mutateEmployee } = useMutation({
         mutationFn: addEmployee,
         onSuccess: (newEmployee) => {
+            queryClient.invalidateQueries({ queryKey: ["employees"] })
             toast.success('Employee created successfully', { theme: "colored", position: "bottom-right" })
             navigate(`/dashboard/employees/${newEmployee.data.id}`)
         },

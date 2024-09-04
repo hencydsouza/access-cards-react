@@ -18,9 +18,14 @@ const addBuilding = async (data: IBuildingInput): Promise<AxiosResponse<IBuildin
     return await useApiClient._post('/building', data)
 }
 
+const deleteBuildingById = async (id: string): Promise<AxiosResponse<IBuildings>> => {
+    return await useApiClient._delete(`/building/${id}`)
+}
+
 export {
     fetchBuildings,
     fetchBuildingById,
     updateBuildingById,
-    addBuilding
+    addBuilding,
+    deleteBuildingById
 }

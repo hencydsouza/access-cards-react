@@ -6,7 +6,7 @@ import { toast } from "react-toastify"
 import { useNavigate } from "react-router"
 import { useFetchCompanyNames } from "../../hooks/useFetchQueries"
 import { ICompanyNames } from "../../types/form.types"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addBuilding } from "../../controllers/buildingsController"
 import { updateCompanyOwnedBuildingsById } from "../../controllers/companyController"
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -58,6 +58,7 @@ const BuildingsAddScreen = (props: { resource: string[] }) => {
         }
     })
 
+    const queryClient = useQueryClient()
     const { mutateAsync: mutateBuilding } = useMutation({
         mutationFn: addBuilding,
         onSuccess: async (newBuilding) => {
@@ -65,7 +66,7 @@ const BuildingsAddScreen = (props: { resource: string[] }) => {
             if (getValues("company") !== "none") {
                 await mutateCompany(newBuilding.data.id)
             }
-            // queryClient.invalidateQueries({ queryKey: ["buildings"] })
+            queryClient.invalidateQueries({ queryKey: ["buildings"] })
             toast.success("Building created successfully", { theme: "colored", position: "bottom-right" })
             navigate("/dashboard/buildings")
         },

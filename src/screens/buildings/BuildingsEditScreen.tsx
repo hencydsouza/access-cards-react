@@ -1,17 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Form, Spinner } from "react-bootstrap"
 import Breadcrumb from "../../components/Breadcrumb"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import { useAuth } from "../../hooks/AuthProvider"
 import { useLocation, useNavigate, useParams } from "react-router"
 import { useEffect, useState } from "react"
-import useApiClient from "../../hooks/ApiClient"
 import { toast } from "react-toastify"
 import { useFetchBuildingById, useFetchCompanyNames } from "../../hooks/useFetchQueries"
 import { IBuildings } from "../../types/buildings.types"
 import { ICompanyNames } from "../../types/form.types"
-import { useMutation } from "@tanstack/react-query"
-import { updateBuildingById } from "../../controllers/buildingsController"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { deleteBuildingById, updateBuildingById } from "../../controllers/buildingsController"
 import { updateCompanyOwnedBuildingsById } from "../../controllers/companyController"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { checkResource } from "../../helpers/checkResource"
@@ -38,12 +36,6 @@ const BuildingsEditScreen = (props: { resource: string[] }) => {
     const [reloading, setReloading] = useState(false);
 
     const { register, handleSubmit, formState: { isSubmitting }, getValues, setValue } = useForm<FormFields>()
-
-    // const [input, setInput] = useState({
-    //     name: "",
-    //     address: "",
-    //     company: ""
-    // })
 
     const { data: buildingData, status: buildingStatus } = useFetchBuildingById(params.id)
     const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
@@ -77,6 +69,7 @@ const BuildingsEditScreen = (props: { resource: string[] }) => {
         }
     })
 
+    const queryClient = useQueryClient();
     const { mutateAsync: mutateBuilding } = useMutation({
         mutationFn: (data: { name: string, address: string }) => {
             return updateBuildingById(building._id, data)
@@ -85,22 +78,13 @@ const BuildingsEditScreen = (props: { resource: string[] }) => {
             if (building.company[0] ? building.company[0]._id !== getValues("company") : getValues("company") !== "none") {
                 await mutateCompany(getValues("company") !== 'none' ? { "ownedBuildings": [{ "buildingId": building._id }] } : { "ownedBuildings": [{ "buildingId": building._id, "buildingName": "none" }] })
             }
+            queryClient.invalidateQueries({ queryKey: ['buildings'] })
             toast.success("Update successful", { theme: "colored", position: "bottom-right" })
         },
         onError: () => {
             toast.error("Error updating building", { theme: "colored", position: "bottom-right" })
         }
     })
-
-    // const handleSubmitEvent = async (e: any) => {
-    //     e.preventDefault();
-    //     if (input.address !== building.address || input.name !== building.name || (building.company[0] ? building.company[0]._id !== input.company : input.company !== "none")) {
-    //         await mutateBuilding({ name: input.name, address: input.address })
-    //         setReloading(true)
-    //         return
-    //     }
-    //     toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
-    // }
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         if (data.address !== building.address || data.name !== building.name || (building.company[0] ? building.company[0]._id !== data.company : data.company !== "none")) {
@@ -111,24 +95,20 @@ const BuildingsEditScreen = (props: { resource: string[] }) => {
         toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
     }
 
-    // const handleInput = (e: any) => {
-    //     const { name, value } = e.target
-    //     setInput((prev) => ({
-    //         ...prev,
-    //         [name]: value
-    //     }))
-    // }
-
-    const handleDelete = async () => {
-        try {
-            const result = await useApiClient._deleteWithToken(`/building/${building._id}`, auth.accessToken)
-            console.log(result.status)
+    const { mutateAsync: deleteBuildingFunc } = useMutation({
+        mutationFn: deleteBuildingById,
+        onSuccess: async () => {
+            queryClient.invalidateQueries({ queryKey: ['buildings'] })
             toast.success('Building deleted successfully', { theme: "colored", position: "bottom-right" })
             navigate("/dashboard/buildings")
-
-        } catch (error: any) {
-            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
+        },
+        onError: (error) => {
+            toast.error(error.message, { theme: "colored", position: "bottom-right" })
         }
+    })
+
+    const handleDelete = async () => {
+        await deleteBuildingFunc(building._id)
     }
 
     return (
