@@ -12,7 +12,7 @@ import { IBuildings } from "../../types/buildings.types"
 import { ICompanyNames } from "../../types/form.types"
 import { useMutation } from "@tanstack/react-query"
 import { updateBuildingById } from "../../controllers/buildingsController"
-import { updateCompanyById } from "../../controllers/companyController"
+import { updateCompanyOwnedBuildingsById } from "../../controllers/companyController"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { checkResource } from "../../helpers/checkResource"
 
@@ -70,7 +70,7 @@ const BuildingsEditScreen = (props: { resource: string[] }) => {
 
     const { mutateAsync: mutateCompany } = useMutation({
         mutationFn: (data: { ownedBuildings: [{ buildingId: string, buildingName?: string }] }) => {
-            return updateCompanyById(getValues("company") !== 'none' ? getValues("company") : building.company[0]._id, data)
+            return updateCompanyOwnedBuildingsById(getValues("company") !== 'none' ? getValues("company") : building.company[0]._id, data)
         },
         onError: () => {
             toast.error("Error updating company", { theme: "colored", position: "bottom-right" })

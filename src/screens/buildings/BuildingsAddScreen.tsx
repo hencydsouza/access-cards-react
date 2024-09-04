@@ -8,7 +8,7 @@ import { useFetchCompanyNames } from "../../hooks/useFetchQueries"
 import { ICompanyNames } from "../../types/form.types"
 import { useMutation } from "@tanstack/react-query"
 import { addBuilding } from "../../controllers/buildingsController"
-import { updateCompanyById } from "../../controllers/companyController"
+import { updateCompanyOwnedBuildingsById } from "../../controllers/companyController"
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { checkResource } from "../../helpers/checkResource"
 
@@ -51,7 +51,7 @@ const BuildingsAddScreen = (props: { resource: string[] }) => {
 
     const { mutateAsync: mutateCompany } = useMutation({
         mutationFn: (data: string) => {
-            return updateCompanyById(getValues("company"), { ownedBuildings: [{ "buildingId": data }] })
+            return updateCompanyOwnedBuildingsById(getValues("company"), { ownedBuildings: [{ "buildingId": data }] })
         },
         onError: () => {
             toast.error("Error updating company", { theme: "colored", position: "bottom-right" })

@@ -55,6 +55,10 @@ const _deleteWithToken = (url: string, accessToken: string) => {
     })
 }
 
+const _delete = (url: string) => {
+    return apiClient.delete(url)
+}
+
 const useApiClient = {
     _get,
     _getWithToken,
@@ -62,7 +66,8 @@ const useApiClient = {
     _postWithToken,
     _patchWithToken,
     _patch,
-    _deleteWithToken
+    _deleteWithToken,
+    _delete
 }
 
 export default useApiClient

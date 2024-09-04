@@ -16,7 +16,15 @@ const addCompany = async (data: ICompanyCreate): Promise<AxiosResponse<ICompany>
     return await useApiClient._post('/company', data)
 }
 
-const updateCompanyById = async (id: string, data: ICompanyOwnedBuildingsUpdate): Promise<AxiosResponse<ICompany>> => {
+const updateCompanyOwnedBuildingsById = async (id: string, data: ICompanyOwnedBuildingsUpdate): Promise<AxiosResponse<ICompany>> => {
+    return await useApiClient._patch(`/company/${id}`, data)
+}
+
+const updateCompanyById = async (id: string, data: {
+    name: string;
+    buildingId: string;
+    ownedBuildings: { buildingId: string }[]
+}): Promise<AxiosResponse<ICompany>> => {
     return await useApiClient._patch(`/company/${id}`, data)
 }
 
@@ -24,5 +32,6 @@ export {
     fetchCompanies,
     fetchCompanyById,
     addCompany,
-    updateCompanyById
+    updateCompanyById,
+    updateCompanyOwnedBuildingsById
 }
