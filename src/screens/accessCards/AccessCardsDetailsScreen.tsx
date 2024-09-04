@@ -1,81 +1,37 @@
 import { useLocation, useParams } from "react-router"
-import { useAuth } from "../../hooks/AuthProvider"
 import { useEffect, useState } from "react"
-import useApiClient from "../../hooks/ApiClient"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button } from "react-bootstrap"
+import { useFetchAccessCardById, useFetchBuildingNames, useFetchCompanyNames, useFetchEmployeeNames } from "../../hooks/useFetchQueries"
+import { IAccessCards } from "../../types/accessCards.types"
+import { IBuildingNames, ICompanyNames, IEmployeeNames } from "../../types/form.types"
 
 const AccessCardsDetailsScreen = () => {
-    const auth = useAuth()
     const params = useParams()
     const location = useLocation()
-    const [accessCards, setAccessCards] = useState<{ cardHolder: { buildingId: string, companyId: string, employeeId: string }, cardNumber: string, id: string, is_active: boolean, issued_at: string, valid_until: string | null }>(location.state)
-    const [companyNames, setCompanyNames] = useState<{ name: string, _id: string }[]>([{
-        name: "name",
-        _id: "_id"
-    }])
-    const [buildingNames, setBuildingNames] = useState<{ name: string, id: string }[]>([{
-        name: "",
-        id: ""
-    }])
-    const [employeeNames, setEmployeeNames] = useState<{ name: string, id: string }[]>([{
-        name: "name",
-        id: "id"
-    }])
+    const [accessCards, setAccessCards] = useState<IAccessCards>(location.state)
+    const [companyNames, setCompanyNames] = useState<Partial<ICompanyNames>[]>([])
+    const [buildingNames, setBuildingNames] = useState<IBuildingNames[]>([])
+    const [employeeNames, setEmployeeNames] = useState<IEmployeeNames[]>([])
 
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken(`/access-card/${params.id}`, auth.accessToken)
-                console.log(response.data)
-                setAccessCards(response.data)
-            } catch (error) {
-                console.error('Error fetching employee data:', error)
-            }
-        }
-        const fetchCompanyNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-                setCompanyNames(response.data)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
-        }
-        const fetchBuildingNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-                setBuildingNames(response.data)
-            } catch (error) {
-                console.error('Error fetching building names:', error)
-            }
-        }
-        const fetchEmployeeNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/employee/employeeNames', auth.accessToken)
-                //   console.log(response.data)
-                setEmployeeNames(response.data)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
-        }
+    const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
+    const { data: buildingNamesData, status: buildingNamesStatus } = useFetchBuildingNames()
+    const { data: employeeNamesData, status: employeeNamesStatus } = useFetchEmployeeNames()
+    const { data: accessCardData, status: accessCardsStatus } = useFetchAccessCardById(params.id!)
 
-        const fetchAllData = async () => {
-            setIsLoading(true)
-            await Promise.all([
-                fetchData(),
-                fetchCompanyNames(),
-                fetchBuildingNames(),
-                fetchEmployeeNames()
-            ])
+    useEffect(() => {
+        if (companyNamesStatus === "success" && buildingNamesStatus === "success" && employeeNamesStatus === "success" && accessCardsStatus === "success") {
+            setCompanyNames(companyNamesData)
+            setBuildingNames(buildingNamesData)
+            setEmployeeNames(employeeNamesData)
+            setAccessCards(accessCardData)
             setIsLoading(false)
         }
-
-        fetchAllData()
-    }, [auth, params.id])
+    }, [companyNamesData, buildingNamesData, employeeNamesData, accessCardData, companyNamesStatus, buildingNamesStatus, employeeNamesStatus, accessCardsStatus])
 
     return (
         !isLoading ? (

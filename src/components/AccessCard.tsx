@@ -8,10 +8,10 @@ const AccessCard = (props: { state: { cardHolder: { buildingId: string, companyI
     return (
         <div className="bg-white rounded-[1.5rem] border border-[#e8f1fc]">
             <div className="p-6 sm:p-8 flex justify-between h-full relative">
-                <span className="absolute left-4 top-4 flex h-3 w-3">
+                {/* <span className="absolute left-4 top-4 flex h-3 w-3">
                     <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${state.is_active ? "bg-[#268e6c]" : "bg-[#d7373f]"} opacity-75`}></span>
                     <span className={`relative inline-flex rounded-full h-3 w-3 ${state.is_active ? "bg-[#268e6c]" : "bg-[#d7373f]"}`}></span>
-                </span>
+                </span> */}
                 <div className="flex flex-col gap-[1rem] relative">
                     <p className="lg:text-[1.4rem] font-extrabold text-[#2C2C2C] md:text-[1.2rem] text-[1.1rem]">{state.cardNumber}</p>
                     <div>
