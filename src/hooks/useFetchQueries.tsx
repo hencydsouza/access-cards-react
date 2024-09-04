@@ -8,6 +8,8 @@ import { IBuildingNames, ICompanyNames } from "../types/form.types";
 import { AxiosResponse } from "axios";
 import { ICompany } from "../types/company.types";
 import { fetchCompanies, fetchCompanyById } from "../controllers/companyController";
+import { IEmployee } from "../types/employees.types";
+import { fetchEmployees } from "../controllers/employeeController";
 
 // Dashboard
 const useFetchDashboard = (): QueryObserverResult<IDashboard> => {
@@ -72,6 +74,17 @@ const useFetchCompanyById = (id: string | undefined): QueryObserverResult<ICompa
     })
 }
 
+// Employees
+const useFetchEmployees = (): QueryObserverResult<IEmployee[]> => {
+    return useQuery<IEmployee[]>({
+        queryFn: async () => {
+            const { data } = await fetchEmployees()
+            return data.results
+        },
+        queryKey: ['employees']
+    })
+}
+
 // Form Data
 const useFetchCompanyNames = (): QueryObserverResult<ICompanyNames[]> => {
     return useQuery<ICompanyNames[]>({
@@ -101,5 +114,6 @@ export {
     useFetchCompanyById,
     useFetchCompanyNames,
     useFetchBuildingNames,
-    useUpdateBuildingById
+    useUpdateBuildingById,
+    useFetchEmployees
 }

@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react"
-import { useAuth } from "../../hooks/AuthProvider"
-import useApiClient from "../../hooks/ApiClient"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button } from "react-bootstrap"
 import EmployeeCard from "../../components/EmployeeCard"
+import { IEmployee } from "../../types/employees.types"
+import { useFetchBuildingNames, useFetchCompanyNames, useFetchEmployees } from "../../hooks/useFetchQueries"
 
 const EmployeesScreen = () => {
-    const auth = useAuth()
-    const [employees, setEmployees] = useState<{ name: string, id: string, email: string, company: { buildingId: string, companyId: string }, permissions: { resource: string, action: string, type: string }[], accessLevels: { accessLevel: string }[] }[]>([])
+    const [employees, setEmployees] = useState<IEmployee[]>([])
     const [companyNames, setCompanyNames] = useState<{ name: string, _id: string }[]>([{
         name: "name",
         _id: "_id"
@@ -21,41 +20,18 @@ const EmployeesScreen = () => {
 
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/employee?limit=100', auth.accessToken)
-                setEmployees(response.data.results)
-            } catch (error) {
-                console.error('Error fetching employees:', error)
-            }
-        }
-        const fetchCompanyNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-                setCompanyNames(response.data)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
-        }
-        const fetchBuildingNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-                console.log(response.data)
-                setBuildingNames(response.data)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
-        }
+    const { data: employeeData, status: employeeStatus } = useFetchEmployees()
+    const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
+    const { data: buildingNamesData, status: buildingNamesStatus } = useFetchBuildingNames()
 
-        const loadData = async () => {
-            setIsLoading(true)
-            await Promise.all([fetchData(), fetchCompanyNames(), fetchBuildingNames()])
+    useEffect(() => {
+        if (employeeStatus === 'success' && companyNamesStatus === 'success' && buildingNamesStatus === 'success') {
+            setEmployees(employeeData)
+            setCompanyNames(companyNamesData)
+            setBuildingNames(buildingNamesData)
             setIsLoading(false)
         }
-
-        loadData()
-    }, [auth])
+    }, [employeeStatus, companyNamesStatus, buildingNamesStatus, employeeData, companyNamesData, buildingNamesData])
 
     return (
         !isLoading ? (
