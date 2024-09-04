@@ -10,21 +10,13 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { IEmployeeCreate } from "../../types/employees.types"
 import { addEmployee } from "../../controllers/employeeController"
 import { useMutation } from "@tanstack/react-query"
+import { IAccessLevelNames, IBuildingNames, ICompanyNames } from "../../types/form.types"
 
 const EmployeeAddScreen = () => {
     const navigate = useNavigate()
-    const [buildingNames, setBuildingNames] = useState<{ name: string, id: string }[]>([{
-        name: "",
-        id: ""
-    }])
-    const [companyNames, setCompanyNames] = useState<{ name: string, _id: string }[]>([{
-        name: "name",
-        _id: "_id"
-    }])
-    const [accessLevelNames, setAccessLevelNames] = useState<{ name: string, id: string }[]>([{
-        name: "",
-        id: ""
-    }])
+    const [buildingNames, setBuildingNames] = useState<IBuildingNames[]>([])
+    const [companyNames, setCompanyNames] = useState<Partial<ICompanyNames>[]>([])
+    const [accessLevelNames, setAccessLevelNames] = useState<IAccessLevelNames[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [reload, setReload] = useState(false)
 
@@ -68,7 +60,6 @@ const EmployeeAddScreen = () => {
 
     const onSubmit: SubmitHandler<IEmployeeCreate> = async (data: IEmployeeCreate) => {
         if (data.name !== "" || data.buildingId !== "none" || data.companyId !== "none" || data.email !== "" || data.accessLevels.length !== 0) {
-            // await mutateCompany({ name: data.name, address: data.address })
             await mutateEmployee(data)
             return
         }
