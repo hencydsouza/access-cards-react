@@ -1,32 +1,23 @@
 import { useEffect, useState } from "react"
-import { useAuth } from "../../hooks/AuthProvider"
-import useApiClient from "../../hooks/ApiClient"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button } from "react-bootstrap"
 import AccessLevelCard from "../../components/AccessLevelCard"
-// import CompanyCard from "../../components/CompanyCard"
+import { useFetchAccessLevels } from "../../hooks/useFetchQueries"
 
 const AccessLevelsScreen = () => {
-    const auth = useAuth()
     const [accessLevels, setAccessLevels] = useState<{ name: string, type: string, id: string, description: string, permissions: { resource: string, action: string }[] | [] }[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
+    const { data, status } = useFetchAccessLevels()
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/access-level?limit=100', auth.accessToken)
-                console.log(response.data.results)
-                setAccessLevels(response.data.results)
-            } catch (error) {
-                console.error('Error fetching access levels:', error)
-            } finally {
-                setIsLoading(false)
-            }
+        if (status === "success") {
+            setAccessLevels(data)
+            setIsLoading(false)
         }
-        fetchData()
-    }, [auth])
+    }, [status, data])
 
     return (
         !isLoading ? (
@@ -48,39 +39,6 @@ const AccessLevelsScreen = () => {
                 </div>
 
                 <div>
-                    {/* <table>
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Building Name</th>
-                                            <th>Owner Company</th>
-                                            <th>Location</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div className="icon-container">
-                                                    <img src="svg/building.svg" alt="">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                Ajantha Towers
-                                            </td>
-                                            <td>PaceWisdom Solutions</td>
-                                            <td>Bejai, Mangalore</td>
-                                            <td>
-                                                <div>
-                                                    <button type="button" className="btn edit-btn">
-                                                        <img src="svg/edit.svg" alt="">
-                                                            Edit
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>  */}
                     <div className="gap-3 mt-8 grid lg:grid-cols-2 xl:grid-cols-3">
                         {
                             accessLevels.map((data) => {
