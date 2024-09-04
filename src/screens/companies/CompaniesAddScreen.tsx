@@ -25,12 +25,6 @@ const CompaniesAddScreen = (props: { resource: string[] }) => {
     const [isLoading, setIsLoading] = useState(true)
     const [reload, setReload] = useState(false)
 
-    // const [input, setInput] = useState<{ name: string, buildingId: string, ownedBuildings: { buildingId: string }[] | [] }>({
-    //     name: "",
-    //     buildingId: "",
-    //     ownedBuildings: []
-    // })
-
     const { data, status: buildingStatus } = useFetchBuildingNames()
 
     useEffect(() => {
@@ -55,29 +49,6 @@ const CompaniesAddScreen = (props: { resource: string[] }) => {
             toast.error(error.message, { theme: "colored", position: "bottom-right" })
         }
     })
-
-    // const handleSubmitEvent = async (e: any) => {
-    //     e.preventDefault();
-    //     try {
-    //         if (input.name.length > 0 && input.buildingId !== "none" && input.buildingId.length > 0 && input.ownedBuildings) {
-    //             if (input.ownedBuildings.length > 0) {
-    //                 const result = await useApiClient._postWithToken(`/company`, { name: input.name, buildingId: input.buildingId, ownedBuildings: input.ownedBuildings }, auth.accessToken)
-    //                 console.log(result.status)
-    //                 toast.success('Company created successfully', { theme: "colored", position: "bottom-right" })
-    //                 navigate(`/dashboard/companies/${result.data.id}`)
-    //             } else {
-    //                 const result = await useApiClient._postWithToken(`/company`, { name: input.name, buildingId: input.buildingId }, auth.accessToken)
-    //                 console.log(result.status)
-    //                 toast.success('Company created successfully', { theme: "colored", position: "bottom-right" })
-    //                 navigate(`/dashboard/companies/${result.data.id}`)
-    //             }
-    //             return
-    //         }
-    //         toast.error("Please fill all the fields", { theme: "colored", position: "bottom-right" })
-    //     } catch (error: any) {
-    //         toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
-    //     }
-    // }
 
     const { register, handleSubmit, formState: { isSubmitting }, getValues, setValue } = useForm<FormFields>({
         defaultValues: {

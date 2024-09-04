@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios"
-import { IEmployee } from "../types/employees.types"
+import { IEmployee, IEmployeeCreate } from "../types/employees.types"
 import useApiClient from "../hooks/ApiClient"
 
 const fetchEmployees = async (): Promise<AxiosResponse<{ results: IEmployee[] }>> => {
@@ -10,7 +10,12 @@ const fetchEmployeeById = async (id: string): Promise<AxiosResponse<IEmployee>> 
     return await useApiClient._get(`/employee/${id}`)
 }
 
+const addEmployee = async (data: IEmployeeCreate): Promise<AxiosResponse<IEmployee>> => {
+    return await useApiClient._post('/employee', data)
+}
+
 export {
     fetchEmployees,
-    fetchEmployeeById
+    fetchEmployeeById,
+    addEmployee
 }
