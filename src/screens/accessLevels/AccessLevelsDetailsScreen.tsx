@@ -1,33 +1,40 @@
 import { useLocation, useParams } from "react-router"
-import { useAuth } from "../../hooks/AuthProvider"
 import { useEffect, useState } from "react"
-import useApiClient from "../../hooks/ApiClient"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button } from "react-bootstrap"
+import { IAccessLevel } from "../../types/accessLevel.types"
+import { useFetchAccessLevelById } from "../../hooks/useFetchQueries"
 
 const AccessLevelsDetailsScreen = () => {
-    const auth = useAuth()
     const params = useParams()
     const location = useLocation()
-    const [accessLevels, setAccessLevels] = useState<{ name: string, type: string, id: string, description: string, permissions: { resource: string, action: string }[] | [] }>(location.state)
+    const [accessLevels, setAccessLevels] = useState<IAccessLevel>(location.state)
     const [isLoading, setIsLoading] = useState(true)
 
+    const { data, status } = useFetchAccessLevelById(params.id!)
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken(`/access-level/${params.id}`, auth.accessToken)
-                console.log(response.data)
-                setAccessLevels(response.data)
-                setIsLoading(false)
-            } catch (error) {
-                console.error("Error fetching access level:", error)
-                setIsLoading(false)
-            }
+        // const fetchData = async () => {
+        //     try {
+        //         const response = await useApiClient._getWithToken(`/access-level/${params.id}`, auth.accessToken)
+        //         console.log(response.data)
+        //         setAccessLevels(response.data)
+        //         setIsLoading(false)
+        //     } catch (error) {
+        //         console.error("Error fetching access level:", error)
+        //         setIsLoading(false)
+        //     }
+        // }
+        // fetchData()
+
+        if (status === "success") {
+            setAccessLevels(data)
+            console.log(data)
+            setIsLoading(false)
         }
-        fetchData()
-    }, [auth, params.id])
+    }, [status, data])
 
     return (
         !isLoading ? (

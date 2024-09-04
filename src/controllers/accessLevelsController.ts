@@ -7,6 +7,11 @@ const fetchAccessLevels = async (): Promise<AxiosResponse<{ results: IAccessLeve
     return await useApiClient._get('/access-level?limit=100')
 }
 
+const fetchAccessLevelById = async (id: string): Promise<AxiosResponse<IAccessLevel>> => {
+    return await useApiClient._get(`/access-level/${id}`)
+}
+
 export {
-    fetchAccessLevels
+    fetchAccessLevels,
+    fetchAccessLevelById
 }

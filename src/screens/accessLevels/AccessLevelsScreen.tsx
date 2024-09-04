@@ -15,6 +15,7 @@ const AccessLevelsScreen = () => {
     useEffect(() => {
         if (status === "success") {
             setAccessLevels(data)
+            console.log(data)
             setIsLoading(false)
         }
     }, [status, data])

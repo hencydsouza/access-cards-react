@@ -15,7 +15,7 @@ import { fetchAccessLog } from "../controllers/accessLogsController";
 import { IAccessCards } from "../types/accessCards.types";
 import { fetchAccessCardById, fetchAccessCards } from "../controllers/accessCardsController";
 import { IAccessLevel } from "../types/accessLevel.types";
-import { fetchAccessLevels } from "../controllers/accessLevelsController";
+import { fetchAccessLevelById, fetchAccessLevels } from "../controllers/accessLevelsController";
 
 // Dashboard
 const useFetchDashboard = (): QueryObserverResult<IDashboard> => {
@@ -144,6 +144,16 @@ const useFetchAccessLevels = (): QueryObserverResult<IAccessLevel[]> => {
     })
 }
 
+const useFetchAccessLevelById = (id: string): QueryObserverResult<IAccessLevel> => {
+    return useQuery<IAccessLevel>({
+        queryFn: async () => {
+            const { data } = await fetchAccessLevelById(id)
+            return data
+        },
+        queryKey: ['accessLevels', id]
+    })
+}
+
 // Form Data
 const useFetchCompanyNames = (): QueryObserverResult<ICompanyNames[]> => {
     return useQuery<ICompanyNames[]>({
@@ -201,5 +211,6 @@ export {
     useFetchAccessLogs,
     useFetchAccessCards,
     useFetchAccessCardById,
-    useFetchAccessLevels
+    useFetchAccessLevels,
+    useFetchAccessLevelById
 }
