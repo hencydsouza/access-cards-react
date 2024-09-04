@@ -8,7 +8,7 @@ import { useNavigate } from "react-router"
 import { useFetchBuildingNames } from "../../hooks/useFetchQueries"
 import { IBuildingNames } from "../../types/form.types"
 import { SubmitHandler, useForm } from "react-hook-form"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addCompany } from "../../controllers/companyController"
 import { ICompanyCreate } from "../../types/company.types"
 import { checkResource } from "../../helpers/checkResource"
@@ -39,10 +39,12 @@ const CompaniesAddScreen = (props: { resource: string[] }) => {
         setReload(false)
     }, [data, buildingStatus, reload, props.resource, navigate])
 
+    const queryClient = useQueryClient()
     const { mutateAsync: mutateCompany } = useMutation({
         mutationFn: addCompany,
         onSuccess: (newCompany) => {
             toast.success('Company created successfully', { theme: "colored", position: "bottom-right" })
+            queryClient.invalidateQueries({ queryKey: ['companies'] })
             navigate(`/dashboard/companies/${newCompany.data.id}`)
         },
         onError: (error) => {
