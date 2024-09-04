@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLocation, useNavigate, useParams } from "react-router"
 import { useEffect, useState } from "react"
-import useApiClient from "../../hooks/ApiClient"
 import { toast } from "react-toastify"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
@@ -12,7 +11,7 @@ import { IBuildingNames } from "../../types/form.types"
 import { ICompany } from "../../types/company.types"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { updateCompanyById } from "../../controllers/companyController"
+import { deleteCompanyById, updateCompanyById } from "../../controllers/companyController"
 
 type FormFields = {
     name: string;
@@ -82,27 +81,6 @@ const CompaniesEditScreen = (props: { resource: string[] }) => {
         toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
     }
 
-    // const handleSubmitEvent = async (e: any) => {
-    //     e.preventDefault();
-    //     if (input.name !== company.name || input.buildingId !== company.buildings.buildingId || (company?.buildings ? company?.buildings.buildingId !== input.buildingId : input.buildingId !== "") || !areArraysEqual(input.ownedBuildings, company.ownedBuildings)) {
-    //         try {
-    //             console.log(input)
-    //             const result = await useApiClient._patchWithToken(`/company/${company.id}`, { name: input.name, buildingId: input.buildingId, ownedBuildings: input.ownedBuildings }, auth.accessToken)
-    //             console.log(result.status)
-    //             toast.success('Update successful', { theme: "colored", position: "bottom-right" })
-    //         } catch (error: any) {
-    //             // console.log(error.response.data.code)
-    //             if (error.response.data.code === 400) {
-    //                 toast.error("Please wait for 5 seconds before updating again", { theme: "colored", position: "bottom-right" })
-    //             } else
-    //                 toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
-    //         }
-    //         setReloading(true)
-    //         return
-    //     }
-    //     toast.error('Please enter update fields', { theme: "colored", position: "bottom-right" })
-    // }
-
     const areArraysEqual = (arr1: any[], arr2: any[]) => {
         if (arr1.length !== arr2.length) return false;
         for (let i = 0; i < arr1.length; i++) {
@@ -134,14 +112,20 @@ const CompaniesEditScreen = (props: { resource: string[] }) => {
         setValue("ownedBuildings", updatedOwnedBuildings)
     }
 
-    const handleDelete = async () => {
-        try {
-            await useApiClient._delete(`/company/${company.id}`)
+    const { mutateAsync: deleteCompany } = useMutation({
+        mutationFn: deleteCompanyById,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['companies'] })
             toast.success('Company deleted successfully', { theme: "colored", position: "bottom-right" })
-            navigate("/dashboard/companies")
-        } catch (error: any) {
-            toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
+            navigate('/dashboard/companies')
+        },
+        onError: (error: any) => {
+            toast.error(error.message, { theme: "colored", position: "bottom-right" })
         }
+    })
+
+    const handleDelete = async () => {
+        await deleteCompany(params.id || "")
     }
 
     return (

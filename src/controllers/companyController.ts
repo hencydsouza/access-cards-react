@@ -28,10 +28,15 @@ const updateCompanyById = async (id: string, data: {
     return await useApiClient._patch(`/company/${id}`, data)
 }
 
+const deleteCompanyById = async (id: string): Promise<AxiosResponse<ICompany>> => {
+    return await useApiClient._delete(`/company/${id}`)
+}
+
 export {
     fetchCompanies,
     fetchCompanyById,
     addCompany,
     updateCompanyById,
-    updateCompanyOwnedBuildingsById
+    updateCompanyOwnedBuildingsById,
+    deleteCompanyById
 }
