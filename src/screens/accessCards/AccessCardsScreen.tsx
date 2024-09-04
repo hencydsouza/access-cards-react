@@ -1,74 +1,44 @@
 import { useEffect, useState } from "react"
-import { useAuth } from "../../hooks/AuthProvider"
-import useApiClient from "../../hooks/ApiClient"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button } from "react-bootstrap"
 import AccessCard from "../../components/AccessCard"
+import { IAccessCards } from "../../types/accessCards.types"
+import { useFetchAccessCards, useFetchBuildingNames, useFetchCompanyNames, useFetchEmployeeNames } from "../../hooks/useFetchQueries"
+import { IBuildingNames, IEmployeeNames } from "../../types/form.types"
 
 const AccessCardsScreen = () => {
-  const auth = useAuth()
-  const [accessCards, setAccessCards] = useState<{ cardHolder: { buildingId: string, companyId: string, employeeId: string }, cardNumber: string, id: string, is_active: boolean, issued_at: string, valid_until: string | null }[]>([])
+  const [accessCards, setAccessCards] = useState<IAccessCards[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const [companyNames, setCompanyNames] = useState<{ name: string, _id: string }[]>([{
-    name: "name",
-    _id: "_id"
-  }])
-  const [buildingNames, setBuildingNames] = useState<{ name: string, id: string }[]>([{
-    name: "name",
-    id: "id"
-  }])
-  const [employeeNames, setEmployeeNames] = useState<{ name: string, id: string }[]>([{
-    name: "name",
-    id: "id"
-  }])
+  const [companyNames, setCompanyNames] = useState<{ name: string, _id: string }[]>([])
+  const [buildingNames, setBuildingNames] = useState<IBuildingNames[]>([])
+  const [employeeNames, setEmployeeNames] = useState<IEmployeeNames[]>([])
+
+  const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
+  const { data: buildingNamesData, status: buildingNamesStatus } = useFetchBuildingNames()
+  const { data: employeeNamesData, status: employeeNamesStatus } = useFetchEmployeeNames()
+  const { data: accessCardsData, status: accessCardsStatus } = useFetchAccessCards()
 
   useEffect(() => {
-    const fetchCompanyNames = async () => {
-      try {
-        const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-        setCompanyNames(response.data)
-      } catch (error) {
-        console.error('Error fetching company names:', error)
-      }
-    }
-    const fetchBuildingNames = async () => {
-      try {
-        const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-        console.log(response.data)
-        setBuildingNames(response.data)
-      } catch (error) {
-        console.error('Error fetching company names:', error)
-      }
-    }
-    const fetchEmployeeNames = async () => {
-      try {
-        const response = await useApiClient._getWithToken('/employee/employeeNames', auth.accessToken)
-        console.log(response.data)
-        setEmployeeNames(response.data)
-      } catch (error) {
-        console.error('Error fetching company names:', error)
-      }
-    }
-
-    const fetchData = async () => {
-      try {
-        const response = await useApiClient._getWithToken('/access-card?limit=100', auth.accessToken)
-        setAccessCards(response.data.results)
-      } catch (error) {
-        console.error('Error fetching access levels:', error)
-      }
-    }
-
-    const loadData = async () => {
-      await Promise.all([fetchData(), fetchCompanyNames(), fetchBuildingNames(), fetchEmployeeNames()])
+    if (companyNamesStatus === "success" && buildingNamesStatus === "success" && employeeNamesStatus === "success" && accessCardsStatus === "success") {
+      setCompanyNames(companyNamesData)
+      setBuildingNames(buildingNamesData)
+      setEmployeeNames(employeeNamesData)
+      setAccessCards(accessCardsData)
       setIsLoading(false)
     }
-
-    loadData()
-  }, [auth])
+  }, [
+    companyNamesData,
+    buildingNamesData,
+    employeeNamesData,
+    accessCardsData,
+    companyNamesStatus,
+    buildingNamesStatus,
+    employeeNamesStatus,
+    accessCardsStatus
+  ])
 
   return (
     !isLoading ? (
