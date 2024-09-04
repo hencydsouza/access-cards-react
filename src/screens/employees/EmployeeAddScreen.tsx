@@ -55,40 +55,6 @@ const EmployeeAddScreen = () => {
         }
     })
 
-    // const handleSubmitEvent = async (e: any) => {
-    //     e.preventDefault();
-    //     if (input.name !== "" || input.buildingId !== "none" || input.companyId !== "none" || input.email !== "" || input.accessLevels.length !== 0) {
-    //         try {
-    //             console.log(input)
-    //             const result = await useApiClient._postWithToken(`/employee/`, {
-    //                 name: input.name,
-    //                 email: input.email,
-    //                 buildingId: input.buildingId,
-    //                 companyId: input.companyId,
-    //                 accessLevels: input.accessLevels
-    //             }, auth.accessToken)
-    //             console.log(result.status)
-    //             toast.success('Employee created successfully', { theme: "colored", position: "bottom-right" })
-    //             navigate(`/dashboard/employees/${result.data.id}`)
-    //         } catch (error: any) {
-    //             toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
-    //         }
-    //         return
-    //     }
-    //     toast.error('Please enter all fields', { theme: "colored", position: "bottom-right" })
-    // }
-
-    // const { mutateAsync: mutateCompany } = useMutation({
-    //     mutationFn: addCompany,
-    //     onSuccess: (newCompany) => {
-    //         toast.success('Company created successfully', { theme: "colored", position: "bottom-right" })
-    //         navigate(`/dashboard/companies/${newCompany.data.id}`)
-    //     },
-    //     onError: (error) => {
-    //         toast.error(error.message, { theme: "colored", position: "bottom-right" })
-    //     }
-    // })
-
     const { mutateAsync: mutateEmployee } = useMutation({
         mutationFn: addEmployee,
         onSuccess: (newEmployee) => {

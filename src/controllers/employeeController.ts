@@ -14,8 +14,18 @@ const addEmployee = async (data: IEmployeeCreate): Promise<AxiosResponse<IEmploy
     return await useApiClient._post('/employee', data)
 }
 
+const updateEmployee = async (id: string, data: IEmployeeCreate): Promise<AxiosResponse<IEmployee>> => {
+    return await useApiClient._patch(`/employee/${id}`, data)
+}
+
+const deleteEmployee = async (id: string): Promise<AxiosResponse<IEmployee>> => {
+    return await useApiClient._delete(`/employee/${id}`)
+}
+
 export {
     fetchEmployees,
     fetchEmployeeById,
-    addEmployee
+    addEmployee,
+    updateEmployee,
+    deleteEmployee
 }
