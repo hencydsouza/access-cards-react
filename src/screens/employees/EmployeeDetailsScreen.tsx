@@ -1,17 +1,16 @@
 import { useLocation, useParams } from "react-router"
-import { useAuth } from "../../hooks/AuthProvider"
 import { useEffect, useState } from "react"
-import useApiClient from "../../hooks/ApiClient"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button } from "react-bootstrap"
+import { IEmployee } from "../../types/employees.types"
+import { useFetchAccessLevelNames, useFetchBuildingNames, useFetchCompanyNames, useFetchEmployeeById } from "../../hooks/useFetchQueries"
 
 const EmployeeDetailsScreen = () => {
-    const auth = useAuth()
     const params = useParams()
     const location = useLocation()
-    const [employee, setEmployee] = useState<{ name: string, id: string, email: string, company: { buildingId: string, companyId: string }, permissions: { resource: string, action: string, type: string }[], accessLevels: { accessLevel: string }[] }>(location.state)
+    const [employee, setEmployee] = useState<IEmployee>(location.state)
     const [companyNames, setCompanyNames] = useState<{ name: string, _id: string }[]>([{
         name: "name",
         _id: "_id"
@@ -27,54 +26,20 @@ const EmployeeDetailsScreen = () => {
 
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await useApiClient._getWithToken(`/employee/${params.id}`, auth.accessToken)
-                console.log(response.data)
-                setEmployee(response.data)
-            } catch (error) {
-                console.error('Error fetching employee data:', error)
-            }
-        }
-        const fetchCompanyNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/company/companyNames', auth.accessToken)
-                setCompanyNames(response.data)
-            } catch (error) {
-                console.error('Error fetching company names:', error)
-            }
-        }
-        const fetchBuildingNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/building/buildingNames', auth.accessToken)
-                setBuildingNames(response.data)
-            } catch (error) {
-                console.error('Error fetching building names:', error)
-            }
-        }
-        const fetchAccessLevelNames = async () => {
-            try {
-                const response = await useApiClient._getWithToken('/access-level/accessLevelNames', auth.accessToken)
-                setAccessLevelNames(response.data)
-            } catch (error) {
-                console.error('Error fetching access level names:', error)
-            }
-        }
+    const { data: employeeData, status: employeeStatus } = useFetchEmployeeById(params.id!)
+    const { data: companyNamesData, status: companyNamesStatus } = useFetchCompanyNames()
+    const { data: buildingNamesData, status: buildingNamesStatus } = useFetchBuildingNames()
+    const { data: accessLevelNamesData, status: accessLevelNamesStatus } = useFetchAccessLevelNames()
 
-        const fetchAllData = async () => {
-            setIsLoading(true)
-            await Promise.all([
-                fetchData(),
-                fetchCompanyNames(),
-                fetchBuildingNames(),
-                fetchAccessLevelNames()
-            ])
+    useEffect(() => {
+        if (employeeStatus === 'success' && companyNamesStatus === 'success' && buildingNamesStatus === 'success' && accessLevelNamesStatus === 'success') {
+            setEmployee(employeeData)
+            setCompanyNames(companyNamesData)
+            setBuildingNames(buildingNamesData)
+            setAccessLevelNames(accessLevelNamesData)
             setIsLoading(false)
         }
-
-        fetchAllData()
-    }, [auth, params.id])
+    }, [employeeStatus, companyNamesStatus, buildingNamesStatus, employeeData, companyNamesData, buildingNamesData, accessLevelNamesStatus, accessLevelNamesData])
 
     return (
         !isLoading ? (

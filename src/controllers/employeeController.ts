@@ -6,6 +6,11 @@ const fetchEmployees = async (): Promise<AxiosResponse<{ results: IEmployee[] }>
     return await useApiClient._get('/employee?limit=100')
 }
 
+const fetchEmployeeById = async (id: string): Promise<AxiosResponse<IEmployee>> => {
+    return await useApiClient._get(`/employee/${id}`)
+}
+
 export {
-    fetchEmployees
+    fetchEmployees,
+    fetchEmployeeById
 }
