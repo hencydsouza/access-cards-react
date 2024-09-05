@@ -8,3 +8,13 @@ export interface IAccessLevel {
         action: string
     }[] | []
 }
+
+export interface IAccessLevelCreate {
+    name: string,
+    type: string,
+    description: string,
+    permissions: {
+        resource: string,
+        action: string
+    }[] | []
+}

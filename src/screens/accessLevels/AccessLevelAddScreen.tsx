@@ -1,59 +1,61 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router"
-import { useAuth } from "../../hooks/AuthProvider"
-import { useState } from "react"
-import useApiClient from "../../hooks/ApiClient"
+import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import BreadcrumbContainer from "../../components/BreadcrumbContainer"
 import Breadcrumb from "../../components/Breadcrumb"
-import { Button, Form } from "react-bootstrap"
+import { Button, Form, Spinner } from "react-bootstrap"
+import { IAccessLevelCreate } from "../../types/accessLevel.types"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { addAccessLevel } from "../../controllers/accessLevelsController"
+
+type FormFields = IAccessLevelCreate
 
 const AccessLevelAddScreen = () => {
-    const auth = useAuth()
     const navigate = useNavigate()
+    const [reload, setReload] = useState(false)
 
-    const [input, setInput] = useState<{ name: string, type: string, id: string, description: string, permissions: { resource: string, action: string }[] | [] }>({
-        name: "",
-        type: "none",
-        id: "",
-        description: "",
-        permissions: []
-    })
+    useEffect(() => {
+        if (reload) {
+            setReload(false)
+        }
+    }, [reload])
 
     const [permissions, setPermissions] = useState<{ resource: string, action: string }>({
         resource: "",
         action: "none"
     })
 
-    const handleSubmitEvent = async (e: any) => {
-        e.preventDefault();
-        if (input.name !== "" && input.type !== "none" && input.description !== "" && input.permissions.length > 0) {
-            try {
-                console.log(input)
-                const result = await useApiClient._postWithToken(`/access-level`,
-                    {
-                        name: input.name,
-                        type: input.type,
-                        description: input.description,
-                        permissions: input.permissions
-                    }, auth.accessToken)
-                console.log(result.status)
-                toast.success('Access level created successfully', { theme: "colored", position: "bottom-right" })
-                navigate(`/dashboard/access-levels/${result.data.id}`)
-            } catch (error: any) {
-                toast.error(error.response.data.message, { theme: "colored", position: "bottom-right" })
-            }
+    const { register, handleSubmit, formState: { isSubmitting }, getValues, setValue } = useForm<FormFields>({
+        defaultValues: {
+            name: "",
+            description: "",
+            type: "none",
+            permissions: []
+        }
+    })
+
+    const queryClient = useQueryClient()
+    const { mutateAsync: mutateAccessLevels } = useMutation({
+        mutationFn: addAccessLevel,
+        onSuccess: (newAccessLevel) => {
+            queryClient.invalidateQueries({ queryKey: ["accessLevels"] })
+            toast.success('Access level created successfully', { theme: "colored", position: "bottom-right" })
+            navigate(`/dashboard/access-levels/${newAccessLevel.data.id}`)
+        },
+        onError: (error) => {
+            toast.error(error.message, { theme: "colored", position: "bottom-right" })
+        }
+    })
+
+
+    const onSubmit: SubmitHandler<FormFields> = async (data) => {
+        if (data.name !== "" && data.type !== "none" && data.description !== "" && data.permissions.length > 0) {
+            await mutateAccessLevels(data)
             return
         }
-        toast.error('Please enter all fields', { theme: "colored", position: "bottom-right" })
-    }
-
-    const handleInput = (e: any) => {
-        const { name, value } = e.target
-        setInput((prev) => ({
-            ...prev,
-            [name]: value
-        }))
+        toast.error("Please fill all the fields", { theme: "colored", position: "bottom-right" })
     }
 
     const handlePermissionInput = (e: any) => {
@@ -66,16 +68,14 @@ const AccessLevelAddScreen = () => {
 
     const handleAddPermission = () => {
         if (permissions.resource !== "" && (permissions.action === "admin" || permissions.action === "access")) {
-            setInput((prev) => ({
-                ...prev,
-                permissions: [
-                    ...prev.permissions.filter(p => p.resource !== permissions.resource),
-                    {
-                        resource: permissions.resource,
-                        action: permissions.action
-                    }
-                ]
-            }))
+            setValue("permissions", [
+                ...getValues("permissions").filter(p => p.resource !== permissions.resource),
+                {
+                    resource: permissions.resource,
+                    action: permissions.action
+                }
+
+            ])
             setPermissions({
                 resource: "",
                 action: "none"
@@ -86,10 +86,8 @@ const AccessLevelAddScreen = () => {
     }
 
     const handleDeletePermission = (resource: string) => {
-        setInput((prev) => ({
-            ...prev,
-            permissions: prev.permissions.filter((permission: { resource: string; action: string }) => permission.resource !== resource)
-        }))
+        setValue("permissions", getValues("permissions").filter((p: { resource: string; action: string }) => p.resource !== resource))
+        setReload(true)
     }
 
     return (
@@ -105,16 +103,16 @@ const AccessLevelAddScreen = () => {
             </div>
 
             <div className="bg-white px-[1rem] md:px-[2rem] py-[2rem] rounded-[1.5rem] border border-[#e8f1fc] mt-8">
-                <Form onSubmit={handleSubmitEvent} className="flex flex-col gap-[1rem] md:gap-[1.5rem]">
+                <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[1rem] md:gap-[1.5rem]">
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Building Name</Form.Label>
-                        <Form.Control required type="text" onChange={handleInput} name="name" placeholder="Enter building name" className="" />
+                        <Form.Control required type="text" {...register("name")} name="name" placeholder="Enter building name" className="" />
                     </Form.Group>
 
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Type</Form.Label>
                         {/* <Form.Control required type="text" value={input.type} onChange={handleInput} name="type" placeholder="Enter building name" className="" /> */}
-                        <Form.Select required onChange={handleInput} name="type" aria-label="Default select example">
+                        <Form.Select required {...register("type")} name="type" aria-label="Default select example">
                             <option value="none" >Select a type</option>
                             <option value="building" >building</option>
                             <option value="company" >company</option>
@@ -124,7 +122,7 @@ const AccessLevelAddScreen = () => {
 
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label className="text-[0.875rem] font-medium text-[#344054] mb-[0.5rem]">Description</Form.Label>
-                        <Form.Control required type="text" onChange={handleInput} name="description" placeholder="Enter building name" className="" />
+                        <Form.Control required type="text" {...register("description")} name="description" placeholder="Enter building name" className="" />
                     </Form.Group>
 
                     <div className="relative overflow-x-auto sm:rounded-lg mt-2 border-2 border-[#e8f1fd] w-full md:w-max">
@@ -137,7 +135,7 @@ const AccessLevelAddScreen = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {input.permissions.map((permission, index) => (
+                                {getValues("permissions").map((permission, index) => (
                                     <tr key={index} className="text-black">
                                         <th scope="row" className="font-medium whitespace-nowrap py-[0.5rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem] text-wrap md:text-nowrap">{permission.resource}</th>
                                         <td className="py-[0.3rem] px-[0.3rem] md:px-[1.5rem] lg:px-[3rem]">{permission.action}</td>
@@ -174,8 +172,8 @@ const AccessLevelAddScreen = () => {
 
                     <div className="flex flex-col sm:flex-row gap-2">
                         <Button type="submit" className="flex  items-center justify-center gap-2">
-                            <i className="fa-solid fa-plus"></i>
-                            Create
+                            <i className={`fa-solid fa-plus ${isSubmitting ? "hidden" : ""}`}></i>
+                            {isSubmitting ? <Spinner animation="border" size="sm" /> : "Create"}
                         </Button>
                     </div>
                 </Form>

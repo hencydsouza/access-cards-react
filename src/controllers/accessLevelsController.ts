@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios"
-import { IAccessLevel } from "../types/accessLevel.types"
+import { IAccessLevel, IAccessLevelCreate } from "../types/accessLevel.types"
 import useApiClient from "../hooks/ApiClient"
 
 
@@ -11,7 +11,12 @@ const fetchAccessLevelById = async (id: string): Promise<AxiosResponse<IAccessLe
     return await useApiClient._get(`/access-level/${id}`)
 }
 
+const addAccessLevel = async (accessLevel: IAccessLevelCreate): Promise<AxiosResponse<IAccessLevel>> => {
+    return await useApiClient._post('/access-level', accessLevel)
+}
+
 export {
     fetchAccessLevels,
-    fetchAccessLevelById
+    fetchAccessLevelById,
+    addAccessLevel
 }
