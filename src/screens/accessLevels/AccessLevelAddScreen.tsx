@@ -171,7 +171,7 @@ const AccessLevelAddScreen = () => {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-2">
-                        <Button type="submit" className="flex  items-center justify-center gap-2">
+                        <Button disabled={isSubmitting} type="submit" className="flex  items-center justify-center gap-2">
                             <i className={`fa-solid fa-plus ${isSubmitting ? "hidden" : ""}`}></i>
                             {isSubmitting ? <Spinner animation="border" size="sm" /> : "Create"}
                         </Button>

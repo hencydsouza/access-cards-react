@@ -15,8 +15,18 @@ const addAccessLevel = async (accessLevel: IAccessLevelCreate): Promise<AxiosRes
     return await useApiClient._post('/access-level', accessLevel)
 }
 
+const updateAccessLevel = async (id: string, accessLevel: IAccessLevelCreate): Promise<AxiosResponse<IAccessLevel>> => {
+    return await useApiClient._patch(`/access-level/${id}`, accessLevel)
+}
+
+const deleteAccessLevelById = async (id: string): Promise<AxiosResponse<IAccessLevel>> => {
+    return await useApiClient._delete(`/access-level/${id}`)
+}
+
 export {
     fetchAccessLevels,
     fetchAccessLevelById,
-    addAccessLevel
+    addAccessLevel,
+    updateAccessLevel,
+    deleteAccessLevelById
 }
